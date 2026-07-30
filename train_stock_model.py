@@ -13,12 +13,14 @@ open (see config.ML_AUTO_RETRAIN_ENABLED / ui/ml_autotrain.py) -- running
 this script by hand is only useful for triggering a retrain immediately,
 or for reading the detailed printed output.
 
-Trained on daily bars across a basket of liquid, sector-diverse stocks (see
-config.ML_STOCK_TRAINING_TICKERS), predicting roughly one trading day
-ahead -- a general "near-term direction" signal, not a model retrained for
-every dropdown timeframe on the Stock Options tab. Because it's trained on
-a pooled basket rather than one ticker, it generalizes reasonably to
-stocks it never specifically saw in training.
+Trained on hourly bars (up to Yahoo Finance's own ~730-day lookback limit
+at that resolution) across a basket of liquid, sector-diverse stocks (see
+config.ML_STOCK_TRAINING_TICKERS), predicting roughly one hour ahead --
+matching the shortest selectable timeframe on the Stock Options tab, and
+matching the hourly auto-retrain cadence (each retrain sees genuinely new
+data, unlike the old daily-bar version). Because it's trained on a pooled
+basket rather than one ticker, it generalizes reasonably to stocks it
+never specifically saw in training.
 
 Read the results honestly -- see train_crypto_model.py's docstring for
 what the accuracy/baseline/calibration numbers mean. Every trained version
@@ -35,7 +37,8 @@ from analysis import ml_training, ml_versions
 def main():
     tickers = config.ML_STOCK_TRAINING_TICKERS
     print(f"Training stock direction model across {len(tickers)} tickers: {', '.join(tickers)}")
-    print(f"Target horizon: {config.ML_STOCK_HORIZON_BARS} trading day(s) ahead (daily bars)\n")
+    print(f"Target horizon: {config.ML_STOCK_HORIZON_BARS} hourly bar(s) ahead "
+          f"(interval={config.ML_STOCK_BAR_INTERVAL}, up to {config.ML_STOCK_HISTORY_PERIOD} of history)\n")
 
     pooled = ml_training.build_pooled_frame(
         tickers,

@@ -9,6 +9,7 @@ import time
 
 import pandas as pd
 
+import config
 from analysis.indicators import compute_all
 from analysis.ml_features import build_training_frame, FEATURE_COLUMNS
 from analysis import ml_model
@@ -43,9 +44,11 @@ def fetch_crypto_symbol_history(symbol: str, timeframe: str, total_bars: int) ->
     return df[["timestamp", "open", "high", "low", "close", "volume"]].reset_index(drop=True)
 
 
-def fetch_stock_ticker_history(ticker: str, period: str = "5y", interval: str = "1d") -> pd.DataFrame:
+def fetch_stock_ticker_history(ticker: str, period: str | None = None, interval: str | None = None) -> pd.DataFrame:
     import yfinance as yf
 
+    period = period or config.ML_STOCK_HISTORY_PERIOD
+    interval = interval or config.ML_STOCK_BAR_INTERVAL
     tkr = yf.Ticker(ticker)
     hist = tkr.history(period=period, interval=interval, auto_adjust=False)
     if hist.empty:

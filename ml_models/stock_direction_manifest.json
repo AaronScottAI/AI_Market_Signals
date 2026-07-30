@@ -1,0 +1,54 @@
+{
+  "active_version": "v1",
+  "versions": [
+    {
+      "version": "v1",
+      "filename": "stock_direction_v1.joblib",
+      "trained_at": "2026-07-30T16:00:56.915798",
+      "metrics": {
+        "n_test": 2440,
+        "accuracy": 0.519672131147541,
+        "precision": 0.5226495726495727,
+        "recall": 0.956964006259781,
+        "f1": 0.6760641238253179,
+        "baseline_majority_class_accuracy": 0.5237704918032787,
+        "calibration": [
+          {
+            "bucket": "0%-30%",
+            "n": 2,
+            "avg_predicted_confidence": 0.2906897550969618,
+            "actual_up_rate": 0.5
+          },
+          {
+            "bucket": "40%-50%",
+            "n": 98,
+            "avg_predicted_confidence": 0.4895279830068807,
+            "actual_up_rate": 0.5510204081632653
+          },
+          {
+            "bucket": "50%-60%",
+            "n": 2326,
+            "avg_predicted_confidence": 0.5241197403348562,
+            "actual_up_rate": 0.5210662080825451
+          },
+          {
+            "bucket": "60%-70%",
+            "n": 11,
+            "avg_predicted_confidence": 0.6621818003328973,
+            "actual_up_rate": 0.8181818181818182
+          },
+          {
+            "bucket": "70%-101%",
+            "n": 3,
+            "avg_predicted_confidence": 0.7356953874435422,
+            "actual_up_rate": 0.6666666666666666
+          }
+        ],
+        "n_train": 9760,
+        "compared_active_accuracy": null,
+        "promoted": true
+      },
+      "promoted": true
+    }
+  ]
+}

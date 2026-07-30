@@ -119,11 +119,15 @@ ML_SIGNAL_WEIGHT = 0.5
 # the 15-min futures settlement window).
 ML_CRYPTO_HORIZON_BARS = 15
 
-# Stock model: trained on daily bars, predicting ~1 trading day ahead. This
-# is a single general "near-term direction" signal -- it isn't retrained
-# per dropdown timeframe (1h/2h/.../1wk), so treat it as a directional lean
-# rather than a horizon-matched forecast for very short or very long
-# selections.
+# Stock model: trained on hourly bars (not daily -- daily bars barely
+# change hour-to-hour, which wasted most of the hourly auto-retrains,
+# since they'd just be re-training on nearly identical data each time).
+# Horizon of 1 bar = predicting ~1 hour ahead, matching the shortest
+# selectable timeframe on the Stock Options tab; treat it as most relevant
+# to the 1h/2h/3h selections, less so for the multi-day ones.
+ML_STOCK_BAR_INTERVAL = "1h"     # yfinance interval string
+ML_STOCK_BAR_MINUTES = 60         # minutes per bar -- used to convert horizon_bars to minutes for live tracking
+ML_STOCK_HISTORY_PERIOD = "730d"   # yfinance's actual max lookback at 1h resolution (Yahoo's own limit, not a choice)
 ML_STOCK_HORIZON_BARS = 1
 ML_STOCK_TRAINING_TICKERS = [
     "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "XOM", "JNJ",
@@ -152,7 +156,7 @@ ML_VERSION_RETENTION = 30
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.5.0"
+APP_VERSION = "1.5.1"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

@@ -188,7 +188,7 @@ def _score_ml(
             version_id = active_version["version"] if active_version else "unknown"
             tracking_horizon_minutes = (
                 config.ML_CRYPTO_HORIZON_BARS if model_name == config.ML_CRYPTO_MODEL_NAME
-                else config.ML_STOCK_HORIZON_BARS * 24 * 60
+                else config.ML_STOCK_HORIZON_BARS * config.ML_STOCK_BAR_MINUTES
             )
             ml_prediction_tracker.log_prediction(
                 model_name, symbol, version_id, proba_up, tracking_horizon_minutes, last_price,
