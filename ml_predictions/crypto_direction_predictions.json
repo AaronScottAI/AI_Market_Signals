@@ -37,9 +37,10 @@
       "price_at_prediction": 55.38,
       "predicted_at": "2026-07-30T15:58:57.357511",
       "resolve_at": "2026-07-30T16:13:57.357515",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -50,9 +51,10 @@
       "price_at_prediction": 55.38,
       "predicted_at": "2026-07-30T15:59:57.616574",
       "resolve_at": "2026-07-30T16:14:57.616577",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -63,9 +65,10 @@
       "price_at_prediction": 55.33,
       "predicted_at": "2026-07-30T16:00:57.667929",
       "resolve_at": "2026-07-30T16:15:57.667932",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -76,9 +79,10 @@
       "price_at_prediction": 55.4,
       "predicted_at": "2026-07-30T16:01:58.041140",
       "resolve_at": "2026-07-30T16:16:58.041144",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -89,9 +93,10 @@
       "price_at_prediction": 55.39,
       "predicted_at": "2026-07-30T16:02:57.261118",
       "resolve_at": "2026-07-30T16:17:57.261122",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -102,9 +107,10 @@
       "price_at_prediction": 55.44,
       "predicted_at": "2026-07-30T16:03:57.498079",
       "resolve_at": "2026-07-30T16:18:57.498082",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -115,9 +121,10 @@
       "price_at_prediction": 55.44,
       "predicted_at": "2026-07-30T16:04:57.746073",
       "resolve_at": "2026-07-30T16:19:57.746076",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -128,9 +135,10 @@
       "price_at_prediction": 55.43,
       "predicted_at": "2026-07-30T16:05:57.998764",
       "resolve_at": "2026-07-30T16:20:57.998769",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -141,9 +149,10 @@
       "price_at_prediction": 55.41,
       "predicted_at": "2026-07-30T16:06:57.191276",
       "resolve_at": "2026-07-30T16:21:57.191281",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -154,9 +163,10 @@
       "price_at_prediction": 55.38,
       "predicted_at": "2026-07-30T16:07:57.444782",
       "resolve_at": "2026-07-30T16:22:57.444787",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -167,9 +177,10 @@
       "price_at_prediction": 55.42,
       "predicted_at": "2026-07-30T16:08:57.647412",
       "resolve_at": "2026-07-30T16:23:57.647416",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -180,9 +191,10 @@
       "price_at_prediction": 55.36,
       "predicted_at": "2026-07-30T16:09:57.859849",
       "resolve_at": "2026-07-30T16:24:57.859853",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -193,9 +205,10 @@
       "price_at_prediction": 55.34,
       "predicted_at": "2026-07-30T16:10:58.188757",
       "resolve_at": "2026-07-30T16:25:58.188760",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": true,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -206,9 +219,10 @@
       "price_at_prediction": 55.31,
       "predicted_at": "2026-07-30T16:11:57.247879",
       "resolve_at": "2026-07-30T16:26:57.247884",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 54.99
     },
     {
       "symbol": "HYPE/USD",
@@ -219,6 +233,150 @@
       "price_at_prediction": 55.25,
       "predicted_at": "2026-07-30T16:12:57.554612",
       "resolve_at": "2026-07-30T16:27:57.554617",
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 54.99
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.36418506809856505,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.04,
+      "predicted_at": "2026-07-30T16:33:53.653763",
+      "resolve_at": "2026-07-30T16:48:53.653768",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.4305879944485087,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.04,
+      "predicted_at": "2026-07-30T16:34:53.503792",
+      "resolve_at": "2026-07-30T16:49:53.503796",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.5360988665216712,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.0,
+      "predicted_at": "2026-07-30T16:35:53.621751",
+      "resolve_at": "2026-07-30T16:50:53.621754",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.47779920248445906,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.0,
+      "predicted_at": "2026-07-30T16:36:53.595573",
+      "resolve_at": "2026-07-30T16:51:53.595576",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.49144268269022956,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.98,
+      "predicted_at": "2026-07-30T16:37:53.593098",
+      "resolve_at": "2026-07-30T16:52:53.593102",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.38509150084710303,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.01,
+      "predicted_at": "2026-07-30T16:38:53.615874",
+      "resolve_at": "2026-07-30T16:53:53.615877",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.40150564226124447,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.01,
+      "predicted_at": "2026-07-30T16:39:53.606646",
+      "resolve_at": "2026-07-30T16:54:53.606650",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.4130277768882911,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.96,
+      "predicted_at": "2026-07-30T16:40:53.598980",
+      "resolve_at": "2026-07-30T16:55:53.598984",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.4808126712354759,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.96,
+      "predicted_at": "2026-07-30T16:41:53.639739",
+      "resolve_at": "2026-07-30T16:56:53.639742",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.5360988665216712,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.96,
+      "predicted_at": "2026-07-30T16:42:53.652792",
+      "resolve_at": "2026-07-30T16:57:53.652795",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.3303841554739242,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.05,
+      "predicted_at": "2026-07-30T16:43:53.608994",
+      "resolve_at": "2026-07-30T16:58:53.608998",
       "resolved": false,
       "actual_direction": null,
       "correct": null

@@ -79,7 +79,8 @@ Target price, which stays exactly what you asked for earlier -- the real
 observed price at window start, no prediction math.
 
 Both models are trained on a *pooled* basket of several symbols (all 8
-configured crypto pairs; a diversified 10-stock basket for stocks) using 16
+configured crypto pairs; a diversified 20-stock basket of large-cap and
+small-cap names for stocks) using 16
 scale-invariant features (percentages/ratios/cyclical encodings, never a
 raw price) -- the original 10 technical indicators, plus short/medium-term
 momentum (5-bar and 20-bar returns) and cyclical time-of-day / day-of-week

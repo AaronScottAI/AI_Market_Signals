@@ -136,8 +136,18 @@ ML_STOCK_BAR_INTERVAL = "1h"     # yfinance interval string
 ML_STOCK_BAR_MINUTES = 60         # minutes per bar -- used to convert horizon_bars to minutes for live tracking
 ML_STOCK_HISTORY_PERIOD = "730d"   # yfinance's actual max lookback at 1h resolution (Yahoo's own limit, not a choice)
 ML_STOCK_HORIZON_BARS = 1
+# Mixed large-cap + small-cap basket, on purpose: the large-cap-only version
+# showed essentially zero edge over the naive baseline (large-caps are
+# heavily arbitraged/efficiently priced), so this adds 10 genuinely smaller,
+# less-followed names across different sectors to see whether there's more
+# learnable signal there. More total tickers also means more pooled
+# training data, at the cost of longer training runs.
 ML_STOCK_TRAINING_TICKERS = [
+    # Large-cap (original 10)
     "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "XOM", "JNJ",
+    # Small-cap additions -- spread across defense, healthcare, clean
+    # energy, materials, biotech, industrials, semis, and telecom
+    "KTOS", "GH", "BE", "HL", "BBIO", "GRC", "SMTC", "IONQ", "SATS", "FN",
 ]
 
 # --- Automatic hourly retraining -----------------------------------------
@@ -163,7 +173,7 @@ ML_VERSION_RETENTION = 30
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.6.0"
+APP_VERSION = "1.6.1"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See
