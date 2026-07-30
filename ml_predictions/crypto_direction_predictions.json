@@ -1661,6 +1661,84 @@
       "resolved": false,
       "actual_direction": null,
       "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.5621601330501932,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.86,
+      "predicted_at": "2026-07-30T19:03:06.935057",
+      "resolve_at": "2026-07-30T19:18:06.935063",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.6181808667025057,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.96,
+      "predicted_at": "2026-07-30T19:04:06.949216",
+      "resolve_at": "2026-07-30T19:19:06.949223",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.6763338452124298,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.88,
+      "predicted_at": "2026-07-30T19:05:06.971055",
+      "resolve_at": "2026-07-30T19:20:06.971062",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.6461269946486337,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.84,
+      "predicted_at": "2026-07-30T19:06:06.969406",
+      "resolve_at": "2026-07-30T19:21:06.969413",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.6885779639366664,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.84,
+      "predicted_at": "2026-07-30T19:07:06.984449",
+      "resolve_at": "2026-07-30T19:22:06.984456",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v7",
+      "proba_up": 0.7059634748420595,
+      "predicted_direction": "UP",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.85,
+      "predicted_at": "2026-07-30T19:08:06.956822",
+      "resolve_at": "2026-07-30T19:23:06.956829",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
     }
   ]
 }

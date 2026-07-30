@@ -1460,9 +1460,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:02:21.462933",
       "resolve_at": "2026-07-30T19:02:21.462937",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1473,9 +1474,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:03:20.274713",
       "resolve_at": "2026-07-30T19:03:20.274716",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1486,9 +1488,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:04:20.328793",
       "resolve_at": "2026-07-30T19:04:20.328797",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1499,9 +1502,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:05:20.224733",
       "resolve_at": "2026-07-30T19:05:20.224737",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1512,9 +1516,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:06:20.287259",
       "resolve_at": "2026-07-30T19:06:20.287262",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1525,9 +1530,10 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T18:07:20.288761",
       "resolve_at": "2026-07-30T19:07:20.288765",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 333.8500061035156
     },
     {
       "symbol": "AAPL",
@@ -1668,6 +1674,84 @@
       "price_at_prediction": 333.8500061035156,
       "predicted_at": "2026-07-30T19:02:07.588153",
       "resolve_at": "2026-07-30T20:02:07.588159",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:03:07.556508",
+      "resolve_at": "2026-07-30T20:03:07.556514",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:04:07.515456",
+      "resolve_at": "2026-07-30T20:04:07.515463",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:05:07.575994",
+      "resolve_at": "2026-07-30T20:05:07.576000",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:06:07.516990",
+      "resolve_at": "2026-07-30T20:06:07.516996",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:07:07.571568",
+      "resolve_at": "2026-07-30T20:07:07.571574",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:08:07.714622",
+      "resolve_at": "2026-07-30T20:08:07.714628",
       "resolved": false,
       "actual_direction": null,
       "correct": null
