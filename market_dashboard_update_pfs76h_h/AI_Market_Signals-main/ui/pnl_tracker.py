@@ -22,9 +22,7 @@ SUBTEXT = "#8b949e"
 TEXT = "#e6edf3"
 PANEL_BG = "#161b22"
 
-KEEP_DAYS = 36500  # effectively permanent (~100 years) -- the History tab
-                     # needs complete data, not a rolling window. This still
-                     # guards against genuinely malformed/garbage timestamps.
+KEEP_DAYS = 14  # prune anything older than this from the file on every save
 
 
 def _load_all_entries(path: str) -> list:
@@ -62,14 +60,6 @@ def _prune(entries: list, keep_days: int = KEEP_DAYS) -> list:
         except (KeyError, ValueError, TypeError):
             continue
     return kept
-
-
-def load_history(path: str) -> list:
-    """Returns all stored entries (not just today's), sorted newest-first.
-    Used by the P&L History tab."""
-    entries = _prune(_load_all_entries(path))
-    entries.sort(key=lambda e: e.get("timestamp", ""), reverse=True)
-    return entries
 
 
 class PnLTracker(QtWidgets.QWidget):

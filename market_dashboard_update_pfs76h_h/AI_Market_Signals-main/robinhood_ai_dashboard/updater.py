@@ -35,7 +35,6 @@ PUBLISHING AN UPDATE (every time after that):
 --------------------------------------------------------------------------
 """
 from __future__ import annotations
-import glob
 import os
 import platform
 import shutil
@@ -94,37 +93,13 @@ def check_for_update(timeout: float = 6.0):
     return is_newer, latest, None
 
 
-def cleanup_stray_update_folders(app_dir: str):
-    """Defensive cleanup, meant to be called once at app startup: removes
-    any leftover market_dashboard_update_* scratch folders sitting inside
-    app_dir from a previous update that didn't clean up after itself (e.g.
-    an older version of this file, or an update interrupted mid-way)."""
-    for path in glob.glob(os.path.join(app_dir, "market_dashboard_update_*")):
-        if os.path.isdir(path):
-            shutil.rmtree(path, ignore_errors=True)
-
-
-def _safe_temp_base(app_dir: str) -> str:
-    """A directory to build the update in, guaranteed to be outside
-    app_dir. tempfile.gettempdir() can fall back to the current working
-    directory in unusual environments, which would drop scratch folders
-    inside the app's own project folder -- this defensively re-derives a
-    safe location if that's ever the case."""
-    candidate = os.path.abspath(tempfile.gettempdir())
-    app_dir_abs = os.path.abspath(app_dir)
-    if candidate == app_dir_abs or candidate.startswith(app_dir_abs + os.sep):
-        candidate = os.path.join(os.path.expanduser("~"), ".market_dashboard_tmp")
-        os.makedirs(candidate, exist_ok=True)
-    return candidate
-
-
 def apply_update_and_relaunch(app_dir: str, timeout: float = 60.0):
     """Downloads the latest version, writes a small helper script that
     waits for this process to exit then swaps the files in and relaunches
     the app. Caller is responsible for quitting the application right
     after calling this (so the helper can safely write over the running
     app's own files)."""
-    tmp_dir = tempfile.mkdtemp(prefix="market_dashboard_update_", dir=_safe_temp_base(app_dir))
+    tmp_dir = tempfile.mkdtemp(prefix="market_dashboard_update_")
     zip_path = os.path.join(tmp_dir, "update.zip")
     urllib.request.urlretrieve(_zip_url(), zip_path)
 
@@ -161,10 +136,6 @@ def apply_update_and_relaunch(app_dir: str, timeout: float = 60.0):
             python_exe = sys.executable
 
         subprocess.Popen([python_exe, os.path.join({app_dir!r}, "main.py")], cwd={app_dir!r})
-
-        # clean up the scratch download/extraction directory now that the
-        # update has been applied -- avoids leaking a folder every update
-        shutil.rmtree({tmp_dir!r}, ignore_errors=True)
     """)
     with open(helper_path, "w") as f:
         f.write(helper_code)

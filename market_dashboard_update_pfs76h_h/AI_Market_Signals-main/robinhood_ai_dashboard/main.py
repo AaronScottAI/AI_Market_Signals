@@ -9,14 +9,12 @@ import sys
 from PySide6 import QtWidgets
 import pyqtgraph as pg
 
-import updater
 from ui.main_window import MainWindow
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    updater.cleanup_stray_update_folders(APP_DIR)
     pg.setConfigOptions(antialias=True)
     app = QtWidgets.QApplication(sys.argv)
     app.setApplicationName("Market Signal Dashboard")

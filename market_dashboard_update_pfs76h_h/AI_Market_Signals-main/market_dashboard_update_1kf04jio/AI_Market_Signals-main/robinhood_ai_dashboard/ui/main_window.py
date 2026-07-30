@@ -6,7 +6,6 @@ import updater
 from ui.futures_tab import FuturesTab
 from ui.options_tab import OptionsTab
 from ui.definitions_tab import DefinitionsTab
-from ui.pnl_history_tab import PnLHistoryTab
 from ui.signal_panel import BG, TEXT, SUBTEXT
 from ui.workers import FetchWorker
 
@@ -32,12 +31,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 background: #161b22; color: {SUBTEXT}; padding: 8px 18px; margin-right: 2px;
             }}
             QTabBar::tab:selected {{ background: {BG}; color: {TEXT}; font-weight: 600; }}
-            QMenuBar {{ background: {BG}; color: {TEXT}; }}
-            QMenuBar::item {{ background: transparent; padding: 4px 10px; }}
-            QMenuBar::item:selected {{ background: #30363d; border-radius: 3px; }}
-            QMenu {{ background: #161b22; color: {TEXT}; border: 1px solid #30363d; }}
-            QMenu::item {{ padding: 6px 24px 6px 12px; }}
-            QMenu::item:selected {{ background: #30363d; }}
         """)
 
         central = QtWidgets.QWidget()
@@ -56,15 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         tabs.addTab(FuturesTab(), "Crypto Futures")
         tabs.addTab(OptionsTab(), "Stock Options")
         tabs.addTab(DefinitionsTab(), "Definitions")
-        self.pnl_history_tab = PnLHistoryTab()
-        tabs.addTab(self.pnl_history_tab, "P&L History")
         layout.addWidget(tabs, stretch=1)
-
-        def _on_tab_changed(index):
-            if tabs.widget(index) is self.pnl_history_tab:
-                self.pnl_history_tab.refresh()
-
-        tabs.currentChanged.connect(_on_tab_changed)
 
         self.setCentralWidget(central)
 

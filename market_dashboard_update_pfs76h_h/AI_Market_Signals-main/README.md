@@ -153,7 +153,6 @@ robinhood_ai_dashboard/
     ├── options_tab.py               # Stock Options tab
     ├── definitions_tab.py            # signal glossary tab
     ├── pnl_tracker.py                  # manual daily P&L log (top-right of both tabs)
-    ├── pnl_history_tab.py               # full P&L history page (date/time stamps + totals)
     ├── workers.py                     # background thread helper for network calls
     └── main_window.py                  # window shell + tabs
 ```

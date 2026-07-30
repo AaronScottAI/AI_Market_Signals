@@ -100,7 +100,7 @@ CONFIDENCE_FLOOR = 0.0
 CONFIDENCE_CEIL = 100.0
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.3.2"
+APP_VERSION = "1.2.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See
