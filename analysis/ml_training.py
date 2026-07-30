@@ -17,10 +17,13 @@ from analysis import ml_model
 
 def fetch_crypto_symbol_history(symbol: str, timeframe: str, total_bars: int) -> pd.DataFrame:
     """Pages forward through Kraken's OHLCV history via ccxt until either
-    `total_bars` is collected or the exchange runs out of data to return."""
+    `total_bars` is collected or the exchange runs out of data to return.
+    Uses its own isolated exchange connection (context="ml_training") so
+    this background fetching never queues up behind the live UI's price
+    polling on a shared rate-limited connection."""
     from data import crypto_source
 
-    exchange = crypto_source.get_exchange()
+    exchange = crypto_source.get_exchange(context="ml_training")
     timeframe_ms = exchange.parse_timeframe(timeframe) * 1000
     since = exchange.milliseconds() - total_bars * timeframe_ms
     rows = []
