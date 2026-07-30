@@ -96,8 +96,8 @@ APP_VERSION = "1.0.0"
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See
 # updater.py for full one-time setup instructions.
-UPDATE_REPO_OWNER = ""       # e.g. "yourusername" -- your GitHub username
-UPDATE_REPO_NAME = "robinhood_ai_dashboard"
+UPDATE_REPO_OWNER = "AaronScottAI"
+UPDATE_REPO_NAME = "AI_Market_Signals"
 UPDATE_BRANCH = "main"
 
 DISCLAIMER = (
