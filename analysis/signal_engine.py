@@ -46,6 +46,10 @@ class SignalResult:
     target_time: "datetime | None" = None  # set when the horizon is pinned to
                                              # a clock boundary (e.g. Robinhood's
                                              # 15-min futures settlement times)
+    ml_signal: "SignalFlag | None" = None   # ML prediction, shown prominently
+                                              # above confidence -- NOT included
+                                              # in `signals` (the rule-based list)
+    ml_probability_up: "float | None" = None  # raw calibrated probability (0-1)
 
 
 @dataclass
@@ -165,7 +169,7 @@ def _score_volume(row) -> tuple[float, SignalFlag]:
 
 def _score_ml(
     df_with_indicators: pd.DataFrame, model_name: str, symbol: str | None = None,
-) -> tuple[float, SignalFlag | None]:
+) -> tuple[float, SignalFlag | None, float | None]:
     from analysis import ml_model  # lazy import: sklearn/joblib only get imported if a model is actually used
 
     last_price = float(df_with_indicators.iloc[-1]["close"])
@@ -179,7 +183,7 @@ def _score_ml(
 
     proba_up = ml_model.predict_proba_up(model_name, df_with_indicators)
     if proba_up is None:
-        return 0.0, None  # no trained/active model yet, or not enough warmed-up history -- caller skips this signal
+        return 0.0, None, None  # no trained/active model yet, or not enough warmed-up history -- caller skips this signal
 
     if symbol is not None:
         try:
@@ -200,7 +204,7 @@ def _score_ml(
     direction = "bullish" if proba_up > 0.5 else ("bearish" if proba_up < 0.5 else "neutral")
     active = abs(proba_up - 0.5) > 0.05
     detail = f"Trained model estimates {proba_up * 100:.0f}% probability of a higher price"
-    return score, SignalFlag("ml_model", "ML model prediction", active, direction, detail)
+    return score, SignalFlag("ml_model", "ML model prediction", active, direction, detail), proba_up
 
 
 _SCORERS = {
@@ -294,10 +298,13 @@ def analyze(
         total_score += score * weight
         total_weight += weight
 
+    ml_signal_flag = None
+    ml_probability_up = None
     if ml_model_name:
-        ml_score, ml_flag = _score_ml(df_with_indicators, ml_model_name, symbol)
+        ml_score, ml_flag, proba_up = _score_ml(df_with_indicators, ml_model_name, symbol)
         if ml_flag is not None:
-            flags.append(ml_flag)
+            ml_signal_flag = ml_flag
+            ml_probability_up = proba_up
             ml_weight = (
                 config.ML_SIGNAL_WEIGHT_CRYPTO if ml_model_name == config.ML_CRYPTO_MODEL_NAME
                 else config.ML_SIGNAL_WEIGHT_STOCK
@@ -361,6 +368,8 @@ def analyze(
         last_price=last_price,
         horizon_minutes=horizon_minutes,
         target_time=target_time,
+        ml_signal=ml_signal_flag,
+        ml_probability_up=ml_probability_up,
     )
 
 

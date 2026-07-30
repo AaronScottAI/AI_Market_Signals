@@ -110,8 +110,9 @@ class HistorySparkline(pg.PlotWidget):
 
 
 class SignalPanel(QtWidgets.QWidget):
-    """Full recommendation panel: direction/confidence header, split bar,
-    breakout gauges, price levels, signal list, and history sparkline."""
+    """Full recommendation panel: ML prediction (if trained), direction/
+    confidence header, split bar, breakout gauges, price levels, signal
+    list, and history sparkline."""
 
     def __init__(self, title_left="Target", chart=None, decimal_threshold: float = 5, parent=None):
         super().__init__(parent)
@@ -120,6 +121,18 @@ class SignalPanel(QtWidgets.QWidget):
         self.setStyleSheet(f"background: {BG}; color: {TEXT};")
         layout = QtWidgets.QVBoxLayout(self)
         layout.setSpacing(10)
+
+        # --- ML model prediction (prominent, above everything else) --------
+        # Hidden entirely unless a trained model produced a live prediction.
+        self.ml_caption_label = QtWidgets.QLabel("ML Model Prediction")
+        self.ml_caption_label.setStyleSheet(f"color: {SUBTEXT}; font-size: 11px;")
+        self.ml_caption_label.setVisible(False)
+        layout.addWidget(self.ml_caption_label)
+
+        self.ml_prediction_label = QtWidgets.QLabel("")
+        self.ml_prediction_label.setStyleSheet("font-size: 19px; font-weight: 800;")
+        self.ml_prediction_label.setVisible(False)
+        layout.addWidget(self.ml_prediction_label)
 
         # --- direction header ---
         header = QtWidgets.QHBoxLayout()
@@ -221,6 +234,20 @@ class SignalPanel(QtWidgets.QWidget):
         )
 
     def update_result(self, result: SignalResult, extra_notes: str = ""):
+        if result.ml_signal is not None and result.ml_probability_up is not None:
+            ml_direction = "UP" if result.ml_probability_up >= 0.5 else "DOWN"
+            ml_arrow = "▲" if ml_direction == "UP" else "▼"
+            ml_color = BULLISH_COLOR if ml_direction == "UP" else BEARISH_COLOR
+            self.ml_prediction_label.setText(
+                f"{ml_arrow} ML Model: {ml_direction}   ({result.ml_probability_up * 100:.0f}% probability)"
+            )
+            self.ml_prediction_label.setStyleSheet(f"font-size: 19px; font-weight: 800; color: {ml_color};")
+            self.ml_caption_label.setVisible(True)
+            self.ml_prediction_label.setVisible(True)
+        else:
+            self.ml_caption_label.setVisible(False)
+            self.ml_prediction_label.setVisible(False)
+
         color = BULLISH_COLOR if result.direction == "UP" else BEARISH_COLOR
         arrow = "▲" if result.direction == "UP" else "▼"
         self.direction_label.setText(f"{arrow} {result.direction}")

@@ -52,7 +52,7 @@ SECTIONS = [
     ]),
     ("Optional ML Signal", [
         (
-            "ML model prediction &mdash; only appears once trained",
+            "ML model prediction &mdash; shown above Confidence, only once trained",
             "varies*",
             "A calibrated machine-learning model (gradient-boosted trees), trained on 16 scale-invariant "
             "features &mdash; the same indicators above (as raw values, not thresholded scores), plus "
