@@ -39,18 +39,6 @@ A Python desktop app (PySide6) with two tabs:
    possible to lose your entire position (and more, with margin) quickly.
    Nothing in this app is financial advice.
 
-## Manual daily P&L tracker
-
-Top-right corner of both tabs: click **"+ Log Trade"** to enter a trade's
-cost and ending value, and it keeps a running total for the day (click the
-total itself to reopen the log, review entries, or remove/clear them).
-Purely a manual log -- it doesn't touch live prices or the analysis engine.
-
-It's saved locally to `pnl_data/` so it survives closing and reopening the
-app, and automatically starts fresh each new day. That folder holds your
-personal trade figures, not app code, so it's listed in `.gitignore` and
-will never get pushed to GitHub if you're using the auto-updater.
-
 ## Keeping every computer updated automatically
 
 If you run this on more than one computer (or share it with someone), you
@@ -152,7 +140,6 @@ robinhood_ai_dashboard/
     ├── futures_tab.py              # Crypto Futures tab
     ├── options_tab.py               # Stock Options tab
     ├── definitions_tab.py            # signal glossary tab
-    ├── pnl_tracker.py                  # manual daily P&L log (top-right of both tabs)
     ├── workers.py                     # background thread helper for network calls
     └── main_window.py                  # window shell + tabs
 ```

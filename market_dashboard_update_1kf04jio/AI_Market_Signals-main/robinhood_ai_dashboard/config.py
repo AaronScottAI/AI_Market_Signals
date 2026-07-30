@@ -4,14 +4,6 @@ Central configuration for the dashboard.
 No Robinhood login and no paid API keys are required to run this app.
 Everything here can be safely tweaked without touching other files.
 """
-import os
-
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-
-# Where the manual P&L tracker (see ui/pnl_tracker.py) stores its local log
-# files. This directory holds personal trade figures, not app code -- make
-# sure it's listed in .gitignore so it's never pushed to a public repo.
-PNL_DATA_DIR = os.path.join(PROJECT_ROOT, "pnl_data")
 
 # ---------------------------------------------------------------------------
 # Crypto / "futures" tab
@@ -100,7 +92,7 @@ CONFIDENCE_FLOOR = 0.0
 CONFIDENCE_CEIL = 100.0
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.1.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

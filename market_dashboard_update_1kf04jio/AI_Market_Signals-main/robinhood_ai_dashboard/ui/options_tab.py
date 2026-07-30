@@ -8,7 +8,6 @@ Options tab:
   - options-chain context (IV skew, put/call ratio) folded into the call
 """
 from __future__ import annotations
-import os
 from PySide6 import QtCore, QtWidgets
 
 import config
@@ -18,7 +17,6 @@ from analysis.options_engine import analyze_options
 from ui.chart_widget import ChartWidget, IndicatorToggleBar, ReferenceLineToggleBar, ChartModeToggle
 from ui.signal_panel import SignalPanel, BULLISH_COLOR, BEARISH_COLOR, SUBTEXT, TEXT, BG
 from ui.workers import FetchWorker
-from ui.pnl_tracker import PnLTracker
 
 
 class OptionsTab(QtWidgets.QWidget):
@@ -71,11 +69,6 @@ class OptionsTab(QtWidgets.QWidget):
         self.status_label = QtWidgets.QLabel("")
         self.status_label.setStyleSheet(f"color: {SUBTEXT}; font-size: 11px;")
         controls.addWidget(self.status_label)
-        controls.addSpacing(16)
-        self.pnl_tracker = PnLTracker(
-            os.path.join(config.PNL_DATA_DIR, "options_pnl.json"), label="Today's P&L"
-        )
-        controls.addWidget(self.pnl_tracker)
         root.addLayout(controls)
 
         # --- spot price header -----------------------------------------------

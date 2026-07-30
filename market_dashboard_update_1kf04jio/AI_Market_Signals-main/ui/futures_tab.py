@@ -11,7 +11,6 @@ Robinhood-style crypto perpetual-futures tab:
 """
 from __future__ import annotations
 import copy
-import os
 from datetime import datetime, timezone
 from PySide6 import QtCore, QtWidgets
 
@@ -23,7 +22,6 @@ from analysis.rti_tracker import RTITracker
 from ui.chart_widget import ChartWidget, IndicatorToggleBar, ReferenceLineToggleBar, ChartModeToggle
 from ui.signal_panel import SignalPanel, BULLISH_COLOR, BEARISH_COLOR, SUBTEXT, TEXT, BG
 from ui.workers import FetchWorker
-from ui.pnl_tracker import PnLTracker
 
 
 class FuturesTab(QtWidgets.QWidget):
@@ -85,11 +83,6 @@ class FuturesTab(QtWidgets.QWidget):
         self.status_label = QtWidgets.QLabel("")
         self.status_label.setStyleSheet(f"color: {SUBTEXT}; font-size: 11px;")
         controls.addWidget(self.status_label)
-        controls.addSpacing(16)
-        self.pnl_tracker = PnLTracker(
-            os.path.join(config.PNL_DATA_DIR, "futures_pnl.json"), label="Today's P&L"
-        )
-        controls.addWidget(self.pnl_tracker)
         root.addLayout(controls)
 
         # --- spot price header -----------------------------------------------
