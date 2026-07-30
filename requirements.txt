@@ -12,3 +12,6 @@ yfinance>=0.2.40      # stock quotes, historical bars, options chains
 
 # Networking
 requests>=2.31.0
+
+# Optional ML direction signal (see analysis/ml_model.py, train_*.py)
+scikit-learn>=1.3.0

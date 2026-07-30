@@ -7,6 +7,8 @@ from ui.futures_tab import FuturesTab
 from ui.options_tab import OptionsTab
 from ui.definitions_tab import DefinitionsTab
 from ui.pnl_history_tab import PnLHistoryTab
+from ui.ml_history_tab import MLHistoryTab
+from ui.ml_autotrain import MLAutoTrainController
 from ui.signal_panel import BG, TEXT, SUBTEXT
 from ui.workers import FetchWorker
 
@@ -58,15 +60,26 @@ class MainWindow(QtWidgets.QMainWindow):
         tabs.addTab(DefinitionsTab(), "Definitions")
         self.pnl_history_tab = PnLHistoryTab()
         tabs.addTab(self.pnl_history_tab, "P&L History")
+        self.ml_history_tab = MLHistoryTab()
+        tabs.addTab(self.ml_history_tab, "Model History")
         layout.addWidget(tabs, stretch=1)
 
         def _on_tab_changed(index):
-            if tabs.widget(index) is self.pnl_history_tab:
+            widget = tabs.widget(index)
+            if widget is self.pnl_history_tab:
                 self.pnl_history_tab.refresh()
+            elif widget is self.ml_history_tab:
+                self.ml_history_tab.refresh()
 
         tabs.currentChanged.connect(_on_tab_changed)
 
         self.setCentralWidget(central)
+
+        # Hourly background auto-retrainer (see config.ML_AUTO_RETRAIN_ENABLED
+        # to turn off). Refresh the Model History tab whenever a retrain
+        # finishes so new versions show up without needing a manual click.
+        self.ml_autotrain = MLAutoTrainController(self)
+        self.ml_autotrain.retrain_finished.connect(self.ml_history_tab.refresh)
 
         help_menu = self.menuBar().addMenu("Help")
         check_updates_action = QtGui.QAction("Check for Updates...", self)

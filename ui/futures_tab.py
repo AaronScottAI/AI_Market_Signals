@@ -328,7 +328,11 @@ class FuturesTab(QtWidgets.QWidget):
         now = datetime.now(timezone.utc)
         target_time = next_clock_boundary(now, config.FUTURES_HORIZON_MINUTES)
         horizon_minutes = max((target_time - now).total_seconds() / 60.0, 0.01)
-        result = analyze(df_ind, horizon_minutes=horizon_minutes, target_time=target_time, decimal_threshold=config.CRYPTO_DECIMAL_THRESHOLD)
+        result = analyze(
+            df_ind, horizon_minutes=horizon_minutes, target_time=target_time,
+            decimal_threshold=config.CRYPTO_DECIMAL_THRESHOLD, ml_model_name=config.ML_CRYPTO_MODEL_NAME,
+            symbol=symbol,
+        )
         return df_ind, result
 
     def _on_chart_result(self, symbol, payload):

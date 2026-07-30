@@ -99,8 +99,60 @@ INDICATOR_WEIGHTS = {
 CONFIDENCE_FLOOR = 0.0
 CONFIDENCE_CEIL = 100.0
 
+# ---------------------------------------------------------------------------
+# Optional ML-based direction signal (see analysis/ml_model.py)
+# ---------------------------------------------------------------------------
+# Purely additive: if no trained model exists yet, the app runs exactly as
+# it always has (the 7 rule-based indicators only). Run train_crypto_model.py
+# / train_stock_model.py to train one; re-run periodically to retrain on
+# fresher data, since market patterns drift over time.
+ML_MODEL_DIR = os.path.join(PROJECT_ROOT, "ml_models")
+ML_CRYPTO_MODEL_NAME = "crypto_direction"
+ML_STOCK_MODEL_NAME = "stock_direction"
+
+# Relative weight of the ML signal in the blended vote, alongside
+# INDICATOR_WEIGHTS (which sum to 1.0). 0.5 means the ML signal carries
+# roughly 1/3 of the total vote (0.5 / (1.0 + 0.5)) once trained.
+ML_SIGNAL_WEIGHT = 0.5
+
+# Crypto model: predict direction this many 1-minute bars ahead (matches
+# the 15-min futures settlement window).
+ML_CRYPTO_HORIZON_BARS = 15
+
+# Stock model: trained on daily bars, predicting ~1 trading day ahead. This
+# is a single general "near-term direction" signal -- it isn't retrained
+# per dropdown timeframe (1h/2h/.../1wk), so treat it as a directional lean
+# rather than a horizon-matched forecast for very short or very long
+# selections.
+ML_STOCK_HORIZON_BARS = 1
+ML_STOCK_TRAINING_TICKERS = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "XOM", "JNJ",
+]
+
+# --- Automatic hourly retraining -----------------------------------------
+# Runs entirely in the background while the app is open; there's no
+# separate background service, so nothing retrains while the app is closed.
+ML_AUTO_RETRAIN_ENABLED = True
+ML_AUTO_RETRAIN_INTERVAL_HOURS = 1
+# A freshly-trained candidate must beat the currently active version by at
+# least this many percentage points (evaluated on the SAME held-out test
+# set, for a fair comparison) to get auto-promoted. Guards against
+# replacing a good model due to random noise from one training run to the
+# next -- most hourly runs will NOT result in a change, since an hour of
+# extra data rarely shifts a model meaningfully.
+ML_PROMOTION_MARGIN = 0.005
+# How many trained versions to keep on disk per model (the active version
+# is always kept regardless of this limit).
+ML_VERSION_RETENTION = 30
+
+# --- Live prediction accuracy tracking ------------------------------------
+# Every live prediction the active model makes gets logged here, then
+# resolved once its horizon has passed -- a real-world accuracy record,
+# separate from (and a check against) the backtested training metrics.
+ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
+
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.3.2"
+APP_VERSION = "1.5.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

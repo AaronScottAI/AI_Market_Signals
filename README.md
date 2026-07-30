@@ -39,6 +39,57 @@ A Python desktop app (PySide6) with two tabs:
    possible to lose your entire position (and more, with margin) quickly.
    Nothing in this app is financial advice.
 
+## Optional ML-based direction signal (auto-retrains hourly)
+
+Off until a model exists. To bootstrap the very first version yourself:
+
+```bash
+python train_crypto_model.py    # needs internet access; takes a few minutes
+python train_stock_model.py     # same
+```
+
+After that, **it retrains itself automatically roughly once an hour** while
+the app is open (see `config.ML_AUTO_RETRAIN_ENABLED` / `ui/ml_autotrain.py`)
+-- no need to run the scripts by hand again unless you want to trigger a
+retrain immediately or read the detailed printed output. There's no
+separate background service, so nothing retrains while the app is closed.
+
+**A new version only replaces the active one if it's actually more
+accurate** -- each retrain trains a candidate, evaluates it on a freshly
+held-out test set, evaluates the *currently active* model on that same
+test set for a fair comparison, and only promotes the candidate if it
+beats the active model by at least `config.ML_PROMOTION_MARGIN` (0.5
+percentage points by default). Most hourly runs won't change anything,
+since an extra hour of data rarely shifts a model meaningfully -- that's
+expected, not a bug.
+
+**Every trained version is kept**, whether promoted or not, and reviewable
+on the **Model History** tab: training date, backtested accuracy, how it
+compared to a naive baseline, and (once enough time has passed) real
+"live" tracked accuracy from actual predictions made during normal use. If
+you think an older version actually performed better, click **"Activate
+this version"** to roll back to it manually -- it stays active until either
+you switch again or a future auto-retrain beats it.
+
+Once trained, the active model's prediction folds into the same
+weighted-vote system as the 7 rule-based indicators (visible in the
+Signals list as "ML model prediction"), influencing both the direction
+call and confidence %. It does **not** touch the Crypto Futures tab's
+Target price, which stays exactly what you asked for earlier -- the real
+observed price at window start, no prediction math.
+
+Both models are trained on a *pooled* basket of several symbols (all 8
+configured crypto pairs; a diversified 10-stock basket for stocks) using
+scale-invariant features (percentages/ratios, never a raw price), so one
+model generalizes reasonably to a ticker it never specifically trained on.
+
+Trained models live in `ml_models/*.joblib` plus a small JSON manifest per
+model tracking version history; live prediction tracking lives in
+`ml_predictions/`. Unlike `pnl_data/`, neither of these folders is
+gitignored, since they're not personal trade data -- pushing them to your
+repo means other computers get the same trained models and tracked
+history automatically via the updater, instead of starting from scratch.
+
 ## Manual daily P&L tracker
 
 Top-right corner of both tabs: click **"+ Log Trade"** to enter a trade's
@@ -137,6 +188,8 @@ robinhood_ai_dashboard/
 ├── updater.py                 # auto-update checker (see "Keeping every computer updated")
 ├── VERSION                     # plain-text version number the updater checks against
 ├── setup_and_run.bat             # one-click Windows setup + launch
+├── train_crypto_model.py           # optional: train the crypto ML signal
+├── train_stock_model.py             # optional: train the stock ML signal
 ├── data/
 │   ├── crypto_source.py      # Kraken/ccxt spot price + candles
 │   ├── stock_source.py        # yfinance spot price + candles
@@ -145,7 +198,12 @@ robinhood_ai_dashboard/
 │   ├── indicators.py           # RSI, MACD, EMA, Bollinger, ATR, VWAP, stochastic
 │   ├── signal_engine.py         # weighted scoring -> direction/confidence/target/stop
 │   ├── options_engine.py         # wraps signal_engine + adds IV/put-call context
-│   └── rti_tracker.py             # CF Benchmarks-style settlement price averaging
+│   ├── rti_tracker.py             # CF Benchmarks-style settlement price averaging
+│   ├── ml_features.py              # scale-invariant feature engineering for the ML signal
+│   ├── ml_model.py                  # optional ML model: load/predict helpers
+│   ├── ml_versions.py                # versioned model registry (train/promote/rollback)
+│   ├── ml_training.py                 # shared fetch/pool/train/evaluate pipeline
+│   └── ml_prediction_tracker.py        # live prediction logging + real-world accuracy
 └── ui/
     ├── chart_widget.py           # candlestick chart + overlays + ref lines
     ├── signal_panel.py            # direction/confidence/signals display
@@ -154,6 +212,8 @@ robinhood_ai_dashboard/
     ├── definitions_tab.py            # signal glossary tab
     ├── pnl_tracker.py                  # manual daily P&L log (top-right of both tabs)
     ├── pnl_history_tab.py               # full P&L history page (date/time stamps + totals)
+    ├── ml_history_tab.py                  # model version history + rollback page
+    ├── ml_autotrain.py                     # hourly background auto-retrain controller
     ├── workers.py                     # background thread helper for network calls
     └── main_window.py                  # window shell + tabs
 ```

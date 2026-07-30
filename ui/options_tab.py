@@ -221,7 +221,7 @@ class OptionsTab(QtWidgets.QWidget):
         except Exception:
             chain_summary = None  # options chain is best-effort context, not required
 
-        result = analyze_options(df_ind, horizon_minutes, chain_summary)
+        result = analyze_options(df_ind, horizon_minutes, chain_summary, ml_model_name=config.ML_STOCK_MODEL_NAME, symbol=symbol)
         return df_ind, result
 
     def _on_chart_result(self, symbol, payload):

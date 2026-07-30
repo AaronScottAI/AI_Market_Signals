@@ -7,10 +7,14 @@ Turns raw indicator values into:
   - a suggested target price for a given time horizon
   - suggested buy / stop-loss levels
 
-This is a transparent, rules-based scoring model -- NOT a trained ML model
-predicting the future. It's the same family of technique used by most
-retail technical-analysis dashboards: turn indicators into a weighted vote.
-Treat outputs as decision support, not certainty.
+Primarily a transparent, rules-based scoring model -- the same family of
+technique used by most retail technical-analysis dashboards: turn
+indicators into a weighted vote. An optional trained ML signal (see
+analysis/ml_model.py) can be folded in as one additional weighted vote
+alongside the 7 rule-based ones, but only once you've actually trained a
+model (see train_crypto_model.py / train_stock_model.py) -- with no
+trained model, this is exactly the rules-only system it always was. Either
+way, treat outputs as decision support, not certainty.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -20,6 +24,7 @@ import math
 import numpy as np
 import pandas as pd
 
+import config
 from config import INDICATOR_WEIGHTS, CONFIDENCE_FLOOR, CONFIDENCE_CEIL
 
 
@@ -158,6 +163,46 @@ def _score_volume(row) -> tuple[float, SignalFlag]:
     return score, SignalFlag("volume", "Volume spike", bool(spike), direction, detail)
 
 
+def _score_ml(
+    df_with_indicators: pd.DataFrame, model_name: str, symbol: str | None = None,
+) -> tuple[float, SignalFlag | None]:
+    from analysis import ml_model  # lazy import: sklearn/joblib only get imported if a model is actually used
+
+    last_price = float(df_with_indicators.iloc[-1]["close"])
+
+    if symbol is not None:
+        try:
+            from analysis import ml_prediction_tracker
+            ml_prediction_tracker.resolve_pending(model_name, symbol, last_price)
+        except Exception:
+            pass  # live tracking is best-effort, never blocks the actual signal
+
+    proba_up = ml_model.predict_proba_up(model_name, df_with_indicators)
+    if proba_up is None:
+        return 0.0, None  # no trained/active model yet, or not enough warmed-up history -- caller skips this signal
+
+    if symbol is not None:
+        try:
+            from analysis import ml_prediction_tracker, ml_versions
+            active_version = ml_versions.get_active_version(model_name)
+            version_id = active_version["version"] if active_version else "unknown"
+            tracking_horizon_minutes = (
+                config.ML_CRYPTO_HORIZON_BARS if model_name == config.ML_CRYPTO_MODEL_NAME
+                else config.ML_STOCK_HORIZON_BARS * 24 * 60
+            )
+            ml_prediction_tracker.log_prediction(
+                model_name, symbol, version_id, proba_up, tracking_horizon_minutes, last_price,
+            )
+        except Exception:
+            pass
+
+    score = _clip((proba_up - 0.5) * 2, -1, 1)
+    direction = "bullish" if proba_up > 0.5 else ("bearish" if proba_up < 0.5 else "neutral")
+    active = abs(proba_up - 0.5) > 0.05
+    detail = f"Trained model estimates {proba_up * 100:.0f}% probability of a higher price"
+    return score, SignalFlag("ml_model", "ML model prediction", active, direction, detail)
+
+
 _SCORERS = {
     "trend_ema": _score_trend_ema,
     "macd": _score_macd,
@@ -217,6 +262,8 @@ def analyze(
     weights: dict | None = None,
     target_time: datetime | None = None,
     decimal_threshold: float = 5,
+    ml_model_name: str | None = None,
+    symbol: str | None = None,
 ) -> SignalResult:
     """
     df_with_indicators: output of indicators.compute_all(), most recent row last.
@@ -225,6 +272,13 @@ def analyze(
     the UI can display "Target for 12:15:00" instead of a generic countdown.
     decimal_threshold: prices below this are rounded/displayed to 6 decimal
     places instead of 2 (useful for low-unit-price crypto tokens).
+    ml_model_name: optional -- name of a trained model (see
+    analysis/ml_model.py) to fold in as an additional weighted signal
+    alongside the 7 rule-based indicators. If no trained/active model
+    exists yet, this is silently skipped and behavior is unchanged.
+    symbol: optional -- only used alongside ml_model_name, to log/resolve
+    live predictions for the Model History tab's accuracy tracking. Safe to
+    omit (the ML signal itself still works; only the tracking is skipped).
     """
     weights = weights or INDICATOR_WEIGHTS
     row = df_with_indicators.iloc[-1]
@@ -239,6 +293,13 @@ def analyze(
         flags.append(flag)
         total_score += score * weight
         total_weight += weight
+
+    if ml_model_name:
+        ml_score, ml_flag = _score_ml(df_with_indicators, ml_model_name, symbol)
+        if ml_flag is not None:
+            flags.append(ml_flag)
+            total_score += ml_score * config.ML_SIGNAL_WEIGHT
+            total_weight += config.ML_SIGNAL_WEIGHT
 
     net_score = total_score / total_weight if total_weight else 0.0  # -1..1
     bullish_pct = _clip(50 + net_score * 50, 2, 98)

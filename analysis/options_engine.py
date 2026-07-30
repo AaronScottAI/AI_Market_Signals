@@ -55,8 +55,10 @@ def analyze_options(
     df_with_indicators: pd.DataFrame,
     horizon_minutes: int,
     chain_summary: dict | None = None,
+    ml_model_name: str | None = None,
+    symbol: str | None = None,
 ) -> OptionsAnalysis:
-    core = analyze(df_with_indicators, horizon_minutes)
+    core = analyze(df_with_indicators, horizon_minutes, ml_model_name=ml_model_name, symbol=symbol)
 
     iv_flag = _iv_skew_flag(chain_summary)
     pc_flag = _put_call_flag(chain_summary)
