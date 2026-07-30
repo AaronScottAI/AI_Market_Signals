@@ -173,7 +173,7 @@ ML_VERSION_RETENTION = 30
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.6.1"
+APP_VERSION = "1.6.2"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

@@ -324,6 +324,71 @@
       "resolved": false,
       "actual_direction": null,
       "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T16:44:55.970838",
+      "resolve_at": "2026-07-30T17:44:55.970843",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T16:45:55.954592",
+      "resolve_at": "2026-07-30T17:45:55.954597",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T16:46:55.944191",
+      "resolve_at": "2026-07-30T17:46:55.944195",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T16:47:55.954517",
+      "resolve_at": "2026-07-30T17:47:55.954521",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T16:48:56.256002",
+      "resolve_at": "2026-07-30T17:48:56.256005",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
     }
   ]
 }

@@ -105,17 +105,44 @@ def cleanup_stray_update_folders(app_dir: str):
 
 
 def _safe_temp_base(app_dir: str) -> str:
-    """A directory to build the update in, guaranteed to be outside
-    app_dir. tempfile.gettempdir() can fall back to the current working
-    directory in unusual environments, which would drop scratch folders
-    inside the app's own project folder -- this defensively re-derives a
-    safe location if that's ever the case."""
-    candidate = os.path.abspath(tempfile.gettempdir())
+    """A directory to build the update in, guaranteed to be outside app_dir
+    AND actually writable -- not just assumed to be. tempfile.gettempdir()
+    can fall back to somewhere unusable in some Windows environments, so
+    this tries several real candidate locations in order and verifies each
+    one by actually writing a test file to it, rather than trusting that
+    os.makedirs() not raising means it'll really work."""
     app_dir_abs = os.path.abspath(app_dir)
-    if candidate == app_dir_abs or candidate.startswith(app_dir_abs + os.sep):
-        candidate = os.path.join(os.path.expanduser("~"), ".market_dashboard_tmp")
-        os.makedirs(candidate, exist_ok=True)
-    return candidate
+
+    candidates = []
+    try:
+        candidates.append(os.path.abspath(tempfile.gettempdir()))
+    except Exception:
+        pass
+    local_appdata = os.environ.get("LOCALAPPDATA")
+    if local_appdata:
+        candidates.append(os.path.join(local_appdata, "MarketSignalDashboardTmp"))
+    candidates.append(os.path.join(os.path.expanduser("~"), "AppData", "Local", "Temp"))
+    candidates.append(os.path.join(os.path.expanduser("~"), ".market_dashboard_tmp"))
+
+    last_error = None
+    for candidate in candidates:
+        if candidate == app_dir_abs or candidate.startswith(app_dir_abs + os.sep):
+            continue  # never use a location inside the app's own folder
+        try:
+            os.makedirs(candidate, exist_ok=True)
+            probe_path = os.path.join(candidate, ".write_test")
+            with open(probe_path, "w") as f:
+                f.write("test")
+            os.remove(probe_path)
+            return candidate
+        except Exception as exc:
+            last_error = exc
+            continue
+
+    raise RuntimeError(
+        f"Couldn't find a writable temporary folder for the update "
+        f"(tried {len(candidates)} locations). Last error: {last_error}"
+    )
 
 
 def apply_update_and_relaunch(app_dir: str, timeout: float = 60.0):

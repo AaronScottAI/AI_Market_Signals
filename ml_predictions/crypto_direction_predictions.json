@@ -380,6 +380,71 @@
       "resolved": false,
       "actual_direction": null,
       "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.33081556185873867,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.0,
+      "predicted_at": "2026-07-30T16:44:53.979506",
+      "resolve_at": "2026-07-30T16:59:53.979509",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.3556152153133629,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.0,
+      "predicted_at": "2026-07-30T16:45:53.664763",
+      "resolve_at": "2026-07-30T17:00:53.664768",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.38935068293138225,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.95,
+      "predicted_at": "2026-07-30T16:46:53.654321",
+      "resolve_at": "2026-07-30T17:01:53.654325",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.33081556185873867,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 54.95,
+      "predicted_at": "2026-07-30T16:47:53.677594",
+      "resolve_at": "2026-07-30T17:02:53.677598",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v4",
+      "proba_up": 0.22629058822246217,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.03,
+      "predicted_at": "2026-07-30T16:48:53.665696",
+      "resolve_at": "2026-07-30T17:03:53.665699",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
     }
   ]
 }
