@@ -1908,6 +1908,19 @@
       "resolved": false,
       "actual_direction": null,
       "correct": null
+    },
+    {
+      "symbol": "AAPL",
+      "version": "v3",
+      "proba_up": 0.5301432180221074,
+      "predicted_direction": "UP",
+      "horizon_minutes": 60,
+      "price_at_prediction": 333.8500061035156,
+      "predicted_at": "2026-07-30T19:28:43.213616",
+      "resolve_at": "2026-07-30T20:28:43.213620",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
     }
   ]
 }

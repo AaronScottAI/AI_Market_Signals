@@ -1957,6 +1957,19 @@
       "resolved": false,
       "actual_direction": null,
       "correct": null
+    },
+    {
+      "symbol": "HYPE/USD",
+      "version": "v9",
+      "proba_up": 0.2924827213335359,
+      "predicted_direction": "DOWN",
+      "horizon_minutes": 15,
+      "price_at_prediction": 55.71,
+      "predicted_at": "2026-07-30T19:28:42.286695",
+      "resolve_at": "2026-07-30T19:43:42.286701",
+      "resolved": false,
+      "actual_direction": null,
+      "correct": null
     }
   ]
 }
