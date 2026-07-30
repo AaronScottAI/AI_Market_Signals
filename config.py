@@ -111,9 +111,16 @@ ML_CRYPTO_MODEL_NAME = "crypto_direction"
 ML_STOCK_MODEL_NAME = "stock_direction"
 
 # Relative weight of the ML signal in the blended vote, alongside
-# INDICATOR_WEIGHTS (which sum to 1.0). 0.5 means the ML signal carries
-# roughly 1/3 of the total vote (0.5 / (1.0 + 0.5)) once trained.
-ML_SIGNAL_WEIGHT = 0.5
+# INDICATOR_WEIGHTS (which sum to 1.0). Set independently per model since
+# they've shown very different real edges in practice: crypto has
+# consistently beaten its naive baseline by a small but real margin, while
+# stock hasn't shown a meaningful edge yet -- so stock's influence is
+# turned down accordingly. Revisit these once you've watched more retrains
+# accumulate (see the Model History tab). 0.5 means that signal carries
+# roughly 1/3 of the total vote (0.5 / (1.0 + 0.5)) once trained; 0.15
+# means roughly 1/8 (0.15 / (1.0 + 0.15)).
+ML_SIGNAL_WEIGHT_CRYPTO = 0.5
+ML_SIGNAL_WEIGHT_STOCK = 0.15
 
 # Crypto model: predict direction this many 1-minute bars ahead (matches
 # the 15-min futures settlement window).
@@ -156,7 +163,7 @@ ML_VERSION_RETENTION = 30
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.5.1"
+APP_VERSION = "1.6.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

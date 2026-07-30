@@ -53,19 +53,20 @@ SECTIONS = [
     ("Optional ML Signal", [
         (
             "ML model prediction &mdash; only appears once trained",
-            "~33%*",
-            "A calibrated machine-learning model (gradient-boosted trees), trained on historical price "
-            "data using the same underlying indicators as everything above, but combined by a model that "
-            "learned the weighting from data rather than hand-tuned rules. <b>Retrains itself automatically "
-            "roughly once an hour</b> while the app is open, but only replaces the active model if the new "
-            "version actually beats it on a freshly-built test set &mdash; most hourly runs won't change "
-            "anything, since an extra hour of data rarely shifts a model much. See the <b>Model History</b> "
-            "tab to review every trained version's stats, its real-world (\u201clive\u201d) tracked accuracy, "
-            "and to manually roll back to an older version if you think it worked better. *~33% reflects its "
-            "share of the vote once trained (weight 0.5 alongside the rule-based weights, which sum to 1.0). "
-            "This is a genuine experiment, not a guaranteed improvement &mdash; the training results "
-            "(accuracy, a naive-baseline comparison, a calibration table) are always visible on the Model "
-            "History tab, so you can judge for yourself whether it's actually adding value.",
+            "varies*",
+            "A calibrated machine-learning model (gradient-boosted trees), trained on 16 scale-invariant "
+            "features &mdash; the same indicators above (as raw values, not thresholded scores), plus "
+            "short/medium-term momentum (5-bar and 20-bar returns) and cyclical time-of-day / day-of-week "
+            "encoding, so it can potentially learn session and weekly structure too. <b>Retrains itself "
+            "automatically roughly once an hour</b> while the app is open, but only replaces the active "
+            "model if the new version actually beats it on a freshly-built test set. See the <b>Model "
+            "History</b> tab to review every trained version's backtested and real-world (\u201clive\u201d) "
+            "tracked accuracy, and to manually roll back to an older version if you think it worked better. "
+            "*Crypto and stock carry different weights in the vote (0.5 vs 0.15 by default) since they've "
+            "shown very different real edges so far &mdash; crypto has consistently beaten its naive "
+            "baseline by a small margin, stock hasn't yet, so stock's influence is intentionally turned "
+            "down. This is a genuine experiment, not a guaranteed improvement &mdash; the training results "
+            "are always visible on the Model History tab so you can judge for yourself.",
         ),
     ]),
     ("Volatility & Volume", [

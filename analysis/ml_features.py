@@ -1,12 +1,27 @@
 """
 Feature engineering for the optional ML direction model.
 
-Deliberately reuses the exact same underlying calculations as the
-rule-based scorers in signal_engine.py, just packaged as raw scale-invariant
-numeric features instead of individually-thresholded scores. Scale-invariant
-(percentages, ratios, z-scores -- never a raw price) so one model trained on
-a pool of several symbols generalizes reasonably to symbols it never saw in
-training, rather than needing a dedicated model per ticker.
+Reuses the same underlying calculations as the rule-based scorers in
+signal_engine.py for the first 10 features, packaged as raw scale-invariant
+numeric values instead of individually-thresholded scores. Adds two more
+feature families on top:
+  - Raw N-bar momentum (return_5bar, return_20bar) -- distinct from the
+    oscillator-style RSI/stochastic above; a well-documented factor in its
+    own right, especially relevant for stocks where short/medium-term
+    momentum has real academic support.
+  - Cyclical time-of-day / day-of-week encoding -- now that both models
+    train on intraday (crypto: 1m, stocks: 1h) bars, there's genuine
+    session/day structure to potentially learn from (e.g. market open vs.
+    close volatility, weekday vs weekend crypto behavior).
+Deliberately still scale-invariant (percentages, ratios, sin/cos -- never a
+raw price) so one pooled model generalizes to symbols it never specifically
+trained on.
+
+Shared by both the crypto and stock training pipelines -- not stock-only,
+since momentum and session structure are plausible factors for crypto too,
+and maintaining one feature set is far simpler than forking two. If it
+turns out these don't help a particular model, gradient-boosted trees are
+reasonably good at just not leaning on a feature that isn't informative.
 """
 from __future__ import annotations
 import numpy as np
@@ -23,6 +38,12 @@ FEATURE_COLUMNS = [
     "stoch_k",
     "stoch_d",
     "vol_z",
+    "return_5bar",
+    "return_20bar",
+    "hour_sin",
+    "hour_cos",
+    "dow_sin",
+    "dow_cos",
 ]
 
 
@@ -51,6 +72,17 @@ def compute_features(df_with_indicators: pd.DataFrame) -> pd.DataFrame:
     out["stoch_k"] = df["stoch_k"]
     out["stoch_d"] = df["stoch_d"]
     out["vol_z"] = df["vol_z"].clip(-6, 6)
+
+    out["return_5bar"] = ((df["close"] / df["close"].shift(5) - 1) * 100).clip(-50, 50)
+    out["return_20bar"] = ((df["close"] / df["close"].shift(20) - 1) * 100).clip(-50, 50)
+
+    ts = pd.to_datetime(df["timestamp"])
+    hour_of_day = ts.dt.hour + ts.dt.minute / 60.0
+    out["hour_sin"] = np.sin(2 * np.pi * hour_of_day / 24)
+    out["hour_cos"] = np.cos(2 * np.pi * hour_of_day / 24)
+    day_of_week = ts.dt.dayofweek  # 0 = Monday
+    out["dow_sin"] = np.sin(2 * np.pi * day_of_week / 7)
+    out["dow_cos"] = np.cos(2 * np.pi * day_of_week / 7)
 
     return out[FEATURE_COLUMNS]
 

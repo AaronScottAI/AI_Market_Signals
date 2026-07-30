@@ -79,9 +79,27 @@ Target price, which stays exactly what you asked for earlier -- the real
 observed price at window start, no prediction math.
 
 Both models are trained on a *pooled* basket of several symbols (all 8
-configured crypto pairs; a diversified 10-stock basket for stocks) using
-scale-invariant features (percentages/ratios, never a raw price), so one
-model generalizes reasonably to a ticker it never specifically trained on.
+configured crypto pairs; a diversified 10-stock basket for stocks) using 16
+scale-invariant features (percentages/ratios/cyclical encodings, never a
+raw price) -- the original 10 technical indicators, plus short/medium-term
+momentum (5-bar and 20-bar returns) and cyclical time-of-day / day-of-week
+encoding, added to give the model a shot at learning session and weekly
+structure now that both models train on intraday bars. One pooled model
+generalizes reasonably to a ticker it never specifically trained on.
+
+**Crypto and stock carry different weights in the blended vote**
+(`ML_SIGNAL_WEIGHT_CRYPTO` / `ML_SIGNAL_WEIGHT_STOCK` in `config.py`, 0.5
+and 0.15 by default) rather than sharing one setting -- crypto has
+consistently shown a small real edge over its naive baseline in testing,
+while stock hasn't yet, so stock's influence is intentionally turned down
+until it demonstrates one. Adjust these yourself once you've watched more
+retrains accumulate on the Model History tab.
+
+Note: if you already had a model trained before this 16-feature update, it
+won't crash -- it just can't be meaningfully compared against a new
+candidate (different number of inputs), so the very next retrain (manual
+or the next automatic hourly one) will promote a fresh, schema-matching
+model automatically.
 
 Trained models live in `ml_models/*.joblib` plus a small JSON manifest per
 model tracking version history; live prediction tracking lives in

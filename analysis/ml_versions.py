@@ -67,10 +67,16 @@ def register_version(name: str, model, metrics: dict, activate: bool = False) ->
         "promoted": bool(activate),
     }
     manifest["versions"].append(entry)
-    if activate or manifest.get("active_version") is None:
+    became_active = activate or manifest.get("active_version") is None
+    if became_active:
         manifest["active_version"] = version_id
     _save_manifest(name, manifest)
     _prune_old_versions(name)
+
+    if became_active:
+        from analysis import ml_model
+        ml_model._model_cache.pop(name, None)  # force a reload from disk next time it's used
+
     return version_id
 
 

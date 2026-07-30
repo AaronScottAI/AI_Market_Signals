@@ -298,8 +298,12 @@ def analyze(
         ml_score, ml_flag = _score_ml(df_with_indicators, ml_model_name, symbol)
         if ml_flag is not None:
             flags.append(ml_flag)
-            total_score += ml_score * config.ML_SIGNAL_WEIGHT
-            total_weight += config.ML_SIGNAL_WEIGHT
+            ml_weight = (
+                config.ML_SIGNAL_WEIGHT_CRYPTO if ml_model_name == config.ML_CRYPTO_MODEL_NAME
+                else config.ML_SIGNAL_WEIGHT_STOCK
+            )
+            total_score += ml_score * ml_weight
+            total_weight += ml_weight
 
     net_score = total_score / total_weight if total_weight else 0.0  # -1..1
     bullish_pct = _clip(50 + net_score * 50, 2, 98)

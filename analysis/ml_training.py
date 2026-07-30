@@ -102,8 +102,14 @@ def evaluate_active_model(name: str, test_frame: pd.DataFrame) -> dict | None:
     """Re-evaluates whatever model is CURRENTLY active on a freshly-built
     test set, so a candidate can be compared fairly against it (the active
     model's own recorded metrics were measured on a different, older test
-    split)."""
+    split). Returns None (treated as "nothing to compare against, promote
+    the candidate by default") if the active model can't be evaluated at
+    all -- e.g. it predates a feature-set change and expects a different
+    number of input columns than the current pipeline produces."""
     model = ml_model.load_model(name)
     if model is None:
         return None
-    return ml_model.evaluate(model, test_frame)
+    try:
+        return ml_model.evaluate(model, test_frame)
+    except Exception:
+        return None
