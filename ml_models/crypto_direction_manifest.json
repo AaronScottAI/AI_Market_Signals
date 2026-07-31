@@ -599,6 +599,55 @@
         "promoted": false
       },
       "promoted": false
+    },
+    {
+      "version": "v12",
+      "filename": "crypto_direction_v12.joblib",
+      "trained_at": "2026-07-30T20:28:13.592758",
+      "metrics": {
+        "n_test": 1080,
+        "accuracy": 0.48703703703703705,
+        "precision": 0.4745762711864407,
+        "recall": 0.8853754940711462,
+        "f1": 0.6179310344827587,
+        "baseline_majority_class_accuracy": 0.5314814814814814,
+        "calibration": [
+          {
+            "bucket": "30%-40%",
+            "n": 7,
+            "avg_predicted_confidence": 0.3956456445629467,
+            "actual_up_rate": 0.42857142857142855
+          },
+          {
+            "bucket": "40%-50%",
+            "n": 129,
+            "avg_predicted_confidence": 0.46356820126826787,
+            "actual_up_rate": 0.4263565891472868
+          },
+          {
+            "bucket": "50%-60%",
+            "n": 150,
+            "avg_predicted_confidence": 0.5552198274859446,
+            "actual_up_rate": 0.3933333333333333
+          },
+          {
+            "bucket": "60%-70%",
+            "n": 374,
+            "avg_predicted_confidence": 0.6494628034192191,
+            "actual_up_rate": 0.40106951871657753
+          },
+          {
+            "bucket": "70%-101%",
+            "n": 420,
+            "avg_predicted_confidence": 0.7889015000539605,
+            "actual_up_rate": 0.569047619047619
+          }
+        ],
+        "n_train": 4304,
+        "compared_active_accuracy": 0.5666666666666667,
+        "promoted": false
+      },
+      "promoted": false
     }
   ]
 }
