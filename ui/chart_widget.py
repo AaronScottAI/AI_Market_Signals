@@ -8,6 +8,11 @@ item, so this implements one) with:
   - a time axis that renders real dates/times
   - a mouse-hover readout (horizontal price line + OHLCV text) with no
     vertical line, so nothing cuts across the candles
+  - by default, auto-fits to show all data (and follows a shifting
+    settlement boundary) on every update_data() call; the moment you
+    manually zoom or pan, that stops -- your view holds steady across
+    future data refreshes until you click "Reset View" (see
+    ChartModeToggle) or switch symbols/timeframe
 """
 from __future__ import annotations
 from datetime import datetime, timezone
@@ -119,6 +124,16 @@ class ChartWidget(pg.GraphicsLayoutWidget):
         self._ref_line_enabled: dict[str, bool] = {}
         self._current_plot_df: pd.DataFrame | None = None
 
+        # Once the user manually zooms or pans (mouse wheel / drag), stop
+        # auto-fitting the view on every update_data() call so their chosen
+        # view survives data refreshes. sigRangeChangedManually only fires
+        # for genuine mouse interaction, never for our own programmatic
+        # setXRange()/autoRange() calls below -- that distinction is exactly
+        # what lets "follow new data by default" and "stay put once you've
+        # zoomed" coexist.
+        self._user_has_zoomed = False
+        self.price_plot.getViewBox().sigRangeChangedManually.connect(self._on_user_zoomed)
+
         # --- hover readout: horizontal price line only (no vertical line) ---
         crosshair_pen = pg.mkPen("#8b949e", width=1, style=QtCore.Qt.DashLine)
         self._hline = pg.InfiniteLine(angle=0, movable=False, pen=crosshair_pen)
@@ -166,14 +181,35 @@ class ChartWidget(pg.GraphicsLayoutWidget):
                 continue
             self._overlay_curves[name].setData(series["x"].to_numpy(), series[name].to_numpy())
 
-        self.price_plot.enableAutoRange(axis="y")
         x_min = plot_df["x"].min()
         x_max = plot_df["x"].max()
         if right_edge_x is not None:
             x_max = max(x_max, right_edge_x)
-        self.price_plot.setXRange(x_min, x_max, padding=0.02)
+
+        if not self._user_has_zoomed:
+            self.price_plot.enableAutoRange(axis="y")
+            self.price_plot.setXRange(x_min, x_max, padding=0.02)
+        # else: leave the current view range exactly as the user left it --
+        # don't yank them back to "fit everything" just because new data
+        # (or a shifted settlement boundary) arrived.
 
         self._current_plot_df = plot_df[["x", "open", "high", "low", "close", "volume"]].reset_index(drop=True)
+
+    def _on_user_zoomed(self, *_args):
+        self._user_has_zoomed = True
+        self.price_plot.enableAutoRange(x=False, y=False)
+
+    def reset_view(self):
+        """Goes back to auto-fitting the full visible data range on every
+        update, exactly like before any manual zoom/pan -- lets you return
+        to the default live-following view without needing to switch
+        symbols or restart the app."""
+        self._user_has_zoomed = False
+        if self._current_plot_df is not None and not self._current_plot_df.empty:
+            self.price_plot.enableAutoRange(axis="y")
+            x_min = self._current_plot_df["x"].min()
+            x_max = self._current_plot_df["x"].max()
+            self.price_plot.setXRange(x_min, x_max, padding=0.02)
 
     def set_chart_mode(self, mode: str):
         """mode: 'candles' or 'line'. Both representations are kept up to
@@ -409,6 +445,19 @@ class ChartModeToggle(QtWidgets.QWidget):
         self._group.addButton(self.line_btn)
         layout.addWidget(self.candles_btn)
         layout.addWidget(self.line_btn)
+
+        self.reset_view_btn = QtWidgets.QPushButton("Reset View")
+        self.reset_view_btn.setStyleSheet(
+            "QPushButton { background: #161b22; color: #8b949e; border: 1px solid #30363d; "
+            "border-radius: 4px; padding: 4px 14px; font-size: 12px; } "
+            "QPushButton:hover { background: #21262d; color: #e6edf3; }"
+        )
+        self.reset_view_btn.setToolTip(
+            "Zooming or panning the chart freezes your view so live updates don't reset it. "
+            "Click here to go back to auto-fitting the full chart."
+        )
+        self.reset_view_btn.clicked.connect(self.chart.reset_view)
+        layout.addWidget(self.reset_view_btn)
 
         self.candles_btn.toggled.connect(self._on_toggle)
         self.chart.set_chart_mode("candles")

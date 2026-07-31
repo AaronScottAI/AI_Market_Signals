@@ -142,7 +142,7 @@ class OptionsTab(QtWidgets.QWidget):
 
         self.load_btn.clicked.connect(self._on_symbol_changed)
         self.symbol_edit.returnPressed.connect(self._on_symbol_changed)
-        self.timeframe_combo.currentIndexChanged.connect(self._refresh_chart_and_signal)
+        self.timeframe_combo.currentIndexChanged.connect(self._on_timeframe_changed)
         self.interval_combo.currentIndexChanged.connect(self._on_interval_changed)
 
         self._on_interval_changed()
@@ -154,7 +154,15 @@ class OptionsTab(QtWidgets.QWidget):
     def _on_symbol_changed(self):
         self.symbol_edit.setText(self.symbol_edit.text().strip().upper())
         self.signal_panel.clear_manual_target()
+        self.chart.reset_view()
         self._poll_spot()
+        self._refresh_chart_and_signal()
+
+    def _on_timeframe_changed(self):
+        # A different timeframe means a completely different candle
+        # resolution/date range, so a previous zoom/pan wouldn't make sense
+        # anymore -- start fresh with an auto-fit view.
+        self.chart.reset_view()
         self._refresh_chart_and_signal()
 
     def _on_interval_changed(self):

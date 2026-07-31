@@ -162,6 +162,7 @@ class FuturesTab(QtWidgets.QWidget):
     # -- symbol / interval changes -----------------------------------------
     def _on_symbol_changed(self):
         self.signal_panel.clear_manual_target()
+        self.chart.reset_view()
         self.rti_tracker = RTITracker(lambda now: next_clock_boundary(now, config.FUTURES_HORIZON_MINUTES))
         self._frozen_target_time = None
         self._frozen_target_price = None
