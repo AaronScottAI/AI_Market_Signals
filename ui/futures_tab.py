@@ -10,7 +10,6 @@ Robinhood-style crypto perpetual-futures tab:
   - breakout / breakdown probability
 """
 from __future__ import annotations
-import copy
 import os
 from datetime import datetime, timezone
 from PySide6 import QtCore, QtWidgets
@@ -36,20 +35,15 @@ class FuturesTab(QtWidgets.QWidget):
         # Target price replicates CF Benchmarks' RTI settlement methodology
         # (see analysis/rti_tracker.py): one price sample per second during
         # the final 60 seconds before each :00/:15/:30/:45 boundary, then
-        # the average of those samples becomes the frozen target/entry for
-        # the window that just started. The ENTIRE signal panel snapshots
-        # together at that same moment -- confidence, bullish/bearish %,
-        # breakout odds, and the signals list all freeze as one unit rather
-        # than drifting independently every 60 seconds, so the whole panel
-        # always reflects a single consistent reading taken once per window.
+        # the average of those samples becomes the frozen Target for the
+        # window that just started -- a fixed reference point, held until
+        # the next boundary. Everything else in the panel (direction,
+        # confidence, bullish %, signals, ML prediction, entry, stop,
+        # take-profit) is live and updates every ~60s cycle.
         self.rti_tracker = RTITracker(lambda now: next_clock_boundary(now, config.FUTURES_HORIZON_MINUTES))
         self._latest_result = None
-        self._frozen_result = None
         self._frozen_target_time = None
         self._frozen_target_price = None
-        self._frozen_entry = None
-        self._frozen_stop = None
-        self._frozen_tp = None
 
         root = QtWidgets.QVBoxLayout(self)
 
@@ -169,12 +163,8 @@ class FuturesTab(QtWidgets.QWidget):
     def _on_symbol_changed(self):
         self.signal_panel.clear_manual_target()
         self.rti_tracker = RTITracker(lambda now: next_clock_boundary(now, config.FUTURES_HORIZON_MINUTES))
-        self._frozen_result = None
         self._frozen_target_time = None
         self._frozen_target_price = None
-        self._frozen_entry = None
-        self._frozen_stop = None
-        self._frozen_tp = None
         self.rti_status_label.setText("")
         self._poll_spot()
         self._refresh_chart_and_signal()
@@ -222,38 +212,9 @@ class FuturesTab(QtWidgets.QWidget):
 
     def _finalize_frozen_target(self, boundary, avg_price):
         if avg_price is None:
-            return  # every sample this window failed to fetch -- keep prior frozen values
-        if self._latest_result is None:
-            return  # no analysis has completed yet -- nothing to snapshot
-        # Re-anchor entry/stop/TP to the newly-averaged settlement price,
-        # preserving the same ATR-based distances the most recent analysis
-        # computed, so the trade plan stays internally consistent.
-        stop_distance = abs(self._latest_result.suggested_stop - self._latest_result.last_price)
-        tp_distance = abs(self._latest_result.suggested_take_profit - self._latest_result.last_price)
-        direction = self._latest_result.direction
-
+            return  # every sample this window failed to fetch -- keep the prior frozen Target
         self._frozen_target_time = boundary
         self._frozen_target_price = avg_price
-        self._frozen_entry = avg_price
-        if direction == "UP":
-            self._frozen_stop = round(avg_price - stop_distance, 6)
-            self._frozen_tp = round(avg_price + tp_distance, 6)
-        else:
-            self._frozen_stop = round(avg_price + stop_distance, 6)
-            self._frozen_tp = round(avg_price - tp_distance, 6)
-
-        # Freeze the WHOLE panel together: take the most recent analysis
-        # (confidence/bullish%/breakout odds/signals list, at most ~60s old)
-        # and overwrite just the price levels with this window's RTI
-        # average, then display that as a single consistent snapshot that
-        # holds until the next boundary.
-        frozen = copy.copy(self._latest_result)
-        frozen.target_time = self._frozen_target_time
-        frozen.target_price = self._frozen_target_price
-        frozen.suggested_entry = self._frozen_entry
-        frozen.suggested_stop = self._frozen_stop
-        frozen.suggested_take_profit = self._frozen_tp
-        self._frozen_result = frozen
 
         # Refresh the chart's right-edge boundary immediately rather than
         # waiting for the next 60s cycle, so the extended range matches the
@@ -261,7 +222,14 @@ class FuturesTab(QtWidgets.QWidget):
         if self._latest_ohlcv is not None:
             right_edge_x = (boundary - datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds()
             self.chart.update_data(self._latest_ohlcv, right_edge_x=right_edge_x)
-        self._display_result(frozen)
+
+        # Show the new Target immediately (don't wait up to 60s for the next
+        # scheduled analysis cycle) using the most recently computed live
+        # result, with just its target fields overridden.
+        if self._latest_result is not None:
+            self._latest_result.target_time = boundary
+            self._latest_result.target_price = avg_price
+            self._display_result(self._latest_result)
 
     def _display_result(self, result):
         target_label = "Target"
@@ -340,26 +308,33 @@ class FuturesTab(QtWidgets.QWidget):
             return
         df_ind, result = payload
         self._latest_ohlcv = df_ind
-        self._latest_result = result  # used by _finalize_frozen_target to build the next frozen snapshot
+        self._latest_result = result  # used by _finalize_frozen_target for immediate re-display at each boundary
 
-        # The chart's candles/volume/overlays always stay live -- only the
-        # signal panel (confidence, bullish %, signals, breakout odds) and
-        # the trade-plan price levels freeze per 15-min window (see
-        # _finalize_frozen_target / _display_result).
+        # Chart candles/volume, and now everything in the signal panel
+        # (direction, confidence, bullish %, signals, ML prediction, entry,
+        # stop, take-profit) update live every cycle. Target is the one
+        # deliberate exception -- it stays pinned to the RTI-averaged price
+        # from whenever the current 15-min window started (see
+        # _finalize_frozen_target), as a fixed reference point rather than
+        # something that moves every refresh.
         right_edge_x = None
         boundary_for_edge = self._frozen_target_time or result.target_time
         if boundary_for_edge is not None:
             right_edge_x = (boundary_for_edge - datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds()
         self.chart.update_data(df_ind, right_edge_x=right_edge_x)
 
-        if self._frozen_result is None:
+        if self._frozen_target_price is not None:
+            result.target_price = self._frozen_target_price
+            result.target_time = self._frozen_target_time
+        else:
             # No window has closed yet (e.g. right after launch or a symbol
-            # change) -- show this live analysis as a temporary placeholder
-            # so the panel isn't empty. target_price still shows the
-            # observed price, never the AI-projected value analyze()
-            # computes internally, consistent with the frozen behavior.
+            # change) -- show the live observed price as a placeholder until
+            # the first RTI window completes. Never the AI-projected value
+            # analyze() computes internally -- Target is always an observed
+            # price, not a prediction.
             result.target_price = result.last_price
-            self._display_result(result)
+
+        self._display_result(result)
 
     # -- shared error handling / cleanup ------------------------------------
     def _on_error(self, message: str):

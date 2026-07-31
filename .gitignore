@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 pnl_data/
+.update_staging/

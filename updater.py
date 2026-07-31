@@ -96,52 +96,78 @@ def check_for_update(timeout: float = 6.0):
 
 def cleanup_stray_update_folders(app_dir: str):
     """Defensive cleanup, meant to be called once at app startup: removes
-    any leftover market_dashboard_update_* scratch folders sitting inside
-    app_dir from a previous update that didn't clean up after itself (e.g.
-    an older version of this file, or an update interrupted mid-way)."""
+    any leftover market_dashboard_update_* or .update_staging scratch
+    folders sitting inside app_dir from a previous update that didn't
+    clean up after itself (e.g. an older version of this file, an update
+    interrupted mid-way, or a run that had to fall back to in-app-dir
+    staging -- see _safe_temp_base)."""
     for path in glob.glob(os.path.join(app_dir, "market_dashboard_update_*")):
         if os.path.isdir(path):
             shutil.rmtree(path, ignore_errors=True)
+    staging = os.path.join(app_dir, ".update_staging")
+    if os.path.isdir(staging):
+        shutil.rmtree(staging, ignore_errors=True)
+
+
+def _is_writable(path: str) -> bool:
+    try:
+        os.makedirs(path, exist_ok=True)
+        probe_path = os.path.join(path, ".write_test")
+        with open(probe_path, "w") as f:
+            f.write("test")
+        os.remove(probe_path)
+        return True
+    except Exception:
+        return False
 
 
 def _safe_temp_base(app_dir: str) -> str:
-    """A directory to build the update in, guaranteed to be outside app_dir
-    AND actually writable -- not just assumed to be. tempfile.gettempdir()
-    can fall back to somewhere unusable in some Windows environments, so
-    this tries several real candidate locations in order and verifies each
-    one by actually writing a test file to it, rather than trusting that
-    os.makedirs() not raising means it'll really work."""
+    """A directory to build the update in, actually verified writable --
+    not just assumed to be. tempfile.gettempdir() can fall back to
+    somewhere unusable in some Windows environments, so this tries several
+    real external candidates first (each verified by actually writing a
+    test file, not just trusting that os.makedirs() not raising means it'll
+    really work), and if every single one of those is blocked -- which can
+    happen on some locked-down machines -- falls back to a clearly-named,
+    self-cleaning staging folder inside the app's own directory, since
+    that's a location already proven writable (the app actively uses it
+    for pnl_data/, ml_models/, etc.). The final helper script always
+    deletes this staging folder once the update is applied, and
+    cleanup_stray_update_folders() removes it on next launch too, as a
+    backstop if that cleanup step is ever skipped."""
     app_dir_abs = os.path.abspath(app_dir)
 
-    candidates = []
+    external_candidates = []
     try:
-        candidates.append(os.path.abspath(tempfile.gettempdir()))
+        external_candidates.append(os.path.abspath(tempfile.gettempdir()))
     except Exception:
         pass
     local_appdata = os.environ.get("LOCALAPPDATA")
     if local_appdata:
-        candidates.append(os.path.join(local_appdata, "MarketSignalDashboardTmp"))
-    candidates.append(os.path.join(os.path.expanduser("~"), "AppData", "Local", "Temp"))
-    candidates.append(os.path.join(os.path.expanduser("~"), ".market_dashboard_tmp"))
+        external_candidates.append(os.path.join(local_appdata, "MarketSignalDashboardTmp"))
+    external_candidates.append(os.path.join(os.path.expanduser("~"), "AppData", "Local", "Temp"))
+    external_candidates.append(os.path.join(os.path.expanduser("~"), ".market_dashboard_tmp"))
 
-    last_error = None
-    for candidate in candidates:
+    for candidate in external_candidates:
         if candidate == app_dir_abs or candidate.startswith(app_dir_abs + os.sep):
-            continue  # never use a location inside the app's own folder
-        try:
-            os.makedirs(candidate, exist_ok=True)
-            probe_path = os.path.join(candidate, ".write_test")
-            with open(probe_path, "w") as f:
-                f.write("test")
-            os.remove(probe_path)
+            continue  # never use a location inside the app's own folder for this pass
+        if _is_writable(candidate):
             return candidate
-        except Exception as exc:
-            last_error = exc
-            continue
+
+    # Every external candidate failed -- fall back to inside app_dir itself,
+    # which we know is writable since the app already uses it for its own
+    # data. Distinct, dot-prefixed name so it's obviously temporary and
+    # easy to identify/clean up if anything goes wrong.
+    fallback = os.path.join(app_dir_abs, ".update_staging")
+    if _is_writable(fallback):
+        return fallback
 
     raise RuntimeError(
-        f"Couldn't find a writable temporary folder for the update "
-        f"(tried {len(candidates)} locations). Last error: {last_error}"
+        f"Couldn't find any writable location for the update -- tried "
+        f"{len(external_candidates)} external folders plus the app's own "
+        f"directory, and all were blocked. This suggests something outside "
+        f"the app (permissions, antivirus, or a managed-machine policy) is "
+        f"preventing new folders from being created almost anywhere."
     )
 
 
