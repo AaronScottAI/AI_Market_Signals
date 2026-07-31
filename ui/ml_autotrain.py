@@ -90,10 +90,7 @@ def _retrain_one(name: str, symbols, fetch_fn, horizon_bars: int) -> dict:
         return {"status": "not_enough_data"}
 
     active_metrics = ml_training.evaluate_active_model(name, test_df)
-    if active_metrics is None:
-        promote = True
-    else:
-        promote = (metrics["accuracy"] - active_metrics["accuracy"]) >= config.ML_PROMOTION_MARGIN
+    promote = ml_training.decide_promotion(metrics, active_metrics)
 
     metrics["compared_active_accuracy"] = active_metrics["accuracy"] if active_metrics else None
     metrics["promoted"] = promote

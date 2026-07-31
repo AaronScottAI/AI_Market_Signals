@@ -161,6 +161,16 @@ ML_AUTO_RETRAIN_INTERVAL_HOURS = 1
 # replacing a good model due to random noise from one training run to the
 # next -- most hourly runs will NOT result in a change, since an hour of
 # extra data rarely shifts a model meaningfully.
+# A candidate must be within this many percentage points of (or above) the
+# naive majority-class baseline to be eligible for promotion AT ALL --
+# regardless of how it compares to the previously active model. Real-world
+# retrains showed two consecutive promotions that each beat the prior
+# model while both remained meaningfully worse than trivially guessing the
+# trend continues (-9.4%, then -2.9%) -- this closes that gap. Applies even
+# to a version with nothing to compare against yet (no free pass just for
+# being first).
+ML_MAX_BASELINE_UNDERPERFORMANCE = 0.01
+
 ML_PROMOTION_MARGIN = 0.005
 # How many trained versions to keep on disk per model (the active version
 # is always kept regardless of this limit).
@@ -173,7 +183,7 @@ ML_VERSION_RETENTION = 30
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.8.1"
+APP_VERSION = "1.9.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

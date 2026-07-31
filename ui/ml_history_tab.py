@@ -190,9 +190,12 @@ class MLHistoryTab(QtWidgets.QWidget):
             "on held-out historical data at training time; \u201cLive Acc.\u201d is tracked from real "
             "predictions made while the app runs, resolved once their horizon has passed \u2014 the more "
             "honest number, though it takes time to accumulate. A new version only auto-replaces the "
-            f"active one if it beats it by at least {config.ML_PROMOTION_MARGIN:.1%} on a freshly-built "
-            "test set; otherwise it's kept here for you to review, or manually activate anyway if you "
-            "disagree with that call. Retrains automatically roughly every "
+            f"active one if it clears two bars: it must be within {config.ML_MAX_BASELINE_UNDERPERFORMANCE:.1%} "
+            "of (or above) the naive majority-guess baseline, AND beat the active version by at least "
+            f"{config.ML_PROMOTION_MARGIN:.1%} on a freshly-built test set \u2014 beating the prior version "
+            "alone isn't enough if it's still meaningfully worse than trivially guessing the trend "
+            "continues. A version that doesn't clear both is kept here for you to review, or manually "
+            "activate anyway if you disagree with that call. Retrains automatically roughly every "
             f"{config.ML_AUTO_RETRAIN_INTERVAL_HOURS:g} hour(s) while the app is open."
         )
         note.setWordWrap(True)

@@ -101,6 +101,40 @@ def train_candidate(pooled_frame: pd.DataFrame, test_fraction: float = 0.2):
     return clf, metrics, train, test
 
 
+def passes_baseline_check(metrics: dict) -> bool:
+    """A candidate must not underperform the naive majority-class baseline
+    by more than config.ML_MAX_BASELINE_UNDERPERFORMANCE, regardless of how
+    it compares to whatever's currently active. Guards against a model
+    that's genuinely bad in absolute terms getting promoted just because it
+    happens to be less bad than the version before it."""
+    accuracy = metrics.get("accuracy")
+    baseline = metrics.get("baseline_majority_class_accuracy")
+    if accuracy is None or baseline is None:
+        return True  # nothing to check against -- don't block on missing data
+    return accuracy >= baseline - config.ML_MAX_BASELINE_UNDERPERFORMANCE
+
+
+def decide_promotion(candidate_metrics: dict, active_metrics: dict | None) -> bool:
+    """The single shared promotion rule, used identically by
+    train_crypto_model.py, train_stock_model.py, and the in-app hourly
+    auto-retrainer (ui/ml_autotrain.py) -- so there's exactly one place
+    this logic lives, not three copies that can silently drift apart.
+
+    Two conditions, both required:
+      1. Clears the naive-baseline bar (see passes_baseline_check) --
+         applies even to a version with nothing else to compare against,
+         so being "first" is never a free pass for a genuinely bad model.
+      2. Beats the currently active model by at least ML_PROMOTION_MARGIN
+         on the same freshly-built test set (skipped if there's no active
+         model to compare against, since condition 1 already covers that
+         case on its own)."""
+    if not passes_baseline_check(candidate_metrics):
+        return False
+    if active_metrics is None:
+        return True
+    return (candidate_metrics["accuracy"] - active_metrics["accuracy"]) >= config.ML_PROMOTION_MARGIN
+
+
 def evaluate_active_model(name: str, test_frame: pd.DataFrame) -> dict | None:
     """Re-evaluates whatever model is CURRENTLY active on a freshly-built
     test set, so a candidate can be compared fairly against it (the active

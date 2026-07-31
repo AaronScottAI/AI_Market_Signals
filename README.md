@@ -54,12 +54,25 @@ the app is open (see `config.ML_AUTO_RETRAIN_ENABLED` / `ui/ml_autotrain.py`)
 retrain immediately or read the detailed printed output. There's no
 separate background service, so nothing retrains while the app is closed.
 
-**A new version only replaces the active one if it's actually more
-accurate** -- each retrain trains a candidate, evaluates it on a freshly
-held-out test set, evaluates the *currently active* model on that same
-test set for a fair comparison, and only promotes the candidate if it
-beats the active model by at least `config.ML_PROMOTION_MARGIN` (0.5
-percentage points by default). Most hourly runs won't change anything,
+**A new version only replaces the active one if it clears two bars.**
+Each retrain trains a candidate, evaluates it on a freshly held-out test
+set, and evaluates the *currently active* model on that same test set for
+a fair comparison. Promotion requires **both**:
+1. The candidate must be within `config.ML_MAX_BASELINE_UNDERPERFORMANCE`
+   (1 percentage point by default) of, or above, the naive majority-guess
+   baseline -- applies even to a version with nothing else to compare
+   against, so being "first" is never a free pass for a genuinely bad
+   model.
+2. The candidate must beat the active model by at least
+   `config.ML_PROMOTION_MARGIN` (0.5 percentage points by default) on that
+   same test set.
+
+Condition 1 exists because real usage showed the gap it closes: two
+consecutive retrains each got promoted purely for beating the version
+before them, while both remained meaningfully worse than trivially
+guessing the trend continues (-9.4%, then -2.9% versus baseline). Beating
+the prior version alone was never actually evidence of being *good* --
+only of being *less bad*. Most hourly runs still won't change anything,
 since an extra hour of data rarely shifts a model meaningfully -- that's
 expected, not a bug.
 

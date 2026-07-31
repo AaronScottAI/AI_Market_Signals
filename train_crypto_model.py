@@ -75,15 +75,29 @@ def main():
 
 
 def _decide_promotion(candidate_metrics: dict, active_metrics: dict | None) -> bool:
-    if active_metrics is None:
-        print("No currently active model to compare against -- this version becomes active by default.")
-        return True
-    diff = candidate_metrics["accuracy"] - active_metrics["accuracy"]
-    print(f"Currently active model's accuracy on this SAME fresh test set: {active_metrics['accuracy']:.1%}")
-    print(f"New candidate's accuracy:                                     {candidate_metrics['accuracy']:.1%}")
-    print(f"Difference: {diff:+.1%}  (promotion requires beating the active model by at "
-          f"least {config.ML_PROMOTION_MARGIN:.1%})")
-    return diff >= config.ML_PROMOTION_MARGIN
+    baseline = candidate_metrics.get("baseline_majority_class_accuracy")
+    accuracy = candidate_metrics.get("accuracy")
+    if baseline is not None and accuracy is not None:
+        gap = accuracy - baseline
+        passes = ml_training.passes_baseline_check(candidate_metrics)
+        print(f"Baseline check: candidate is {gap:+.1%} vs. the naive baseline "
+              f"(must be within {config.ML_MAX_BASELINE_UNDERPERFORMANCE:.1%} of it, or above) -- "
+              f"{'PASSES' if passes else 'FAILS'}")
+        if not passes:
+            print("Candidate meaningfully underperforms trivially guessing the trend continues -- "
+                  "will NOT be promoted, regardless of how it compares to the active model.")
+
+    if active_metrics is not None:
+        diff = candidate_metrics["accuracy"] - active_metrics["accuracy"]
+        print(f"Currently active model's accuracy on this SAME fresh test set: {active_metrics['accuracy']:.1%}")
+        print(f"New candidate's accuracy:                                     {candidate_metrics['accuracy']:.1%}")
+        print(f"Difference: {diff:+.1%}  (promotion also requires beating the active model by at "
+              f"least {config.ML_PROMOTION_MARGIN:.1%})")
+    else:
+        print("No currently active model to compare against -- clearing the baseline bar is "
+              "the only requirement in that case.")
+
+    return ml_training.decide_promotion(candidate_metrics, active_metrics)
 
 
 def _print_results(results: dict):
