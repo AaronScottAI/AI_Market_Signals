@@ -39,6 +39,42 @@ A Python desktop app (PySide6) with two tabs:
    possible to lose your entire position (and more, with margin) quickly.
    Nothing in this app is financial advice.
 
+## Chart pattern signals
+
+Beyond the original 7 technical indicators, two more signal slots are on
+by default (no setup needed), each checking a family of related patterns
+and using whichever one is detected and cleanest:
+
+- **Reversal family**: double top, double bottom, head & shoulders,
+  inverse head & shoulders
+- **Continuation family**: bull flag, bear flag, ascending triangle,
+  descending triangle
+
+All detected straight from price history in `analysis/chart_patterns.py`.
+Like the ML signal, each slot only shows up in the vote when something in
+its family is actually detected -- most of the time neither is present,
+and nothing changes.
+
+These are heuristic approximations of what a human technical analyst would
+eyeball, not exact geometric definitions -- treat them the same way you'd
+treat a person's chart read: often useful, sometimes wrong, never a
+guarantee. Each detection includes a quality score reflecting how clean/
+textbook it looks, which scales its weight in the vote. It's possible for
+a reversal and a continuation pattern to fire simultaneously (or for two
+patterns in the same family to both technically match, in which case the
+higher-quality one wins that slot) -- genuinely overlapping reads of the
+same price action, not a bug.
+
+**Deliberately not covered:** cup and handle -- a much longer, more
+subjective formation that's harder to detect reliably without a lot of
+false positives, left out rather than shipped half-confident.
+
+Not currently extended to the ML model's training features -- pattern
+detection needs a window of recent bars ending at each point in time,
+which is cheap for one live analysis but would mean re-running detection
+at every row of a 50,000+ row training set if done naively (a real
+performance concern, not yet solved). Rule-based only for now.
+
 ## Optional ML-based direction signal (auto-retrains hourly)
 
 Off until a model exists. To bootstrap the very first version yourself:
@@ -228,6 +264,7 @@ robinhood_ai_dashboard/
 │   └── options_source.py       # yfinance options chain
 ├── analysis/
 │   ├── indicators.py           # RSI, MACD, EMA, Bollinger, ATR, VWAP, stochastic
+│   ├── chart_patterns.py        # double top/bottom, bull/bear flag detection
 │   ├── signal_engine.py         # weighted scoring -> direction/confidence/target/stop
 │   ├── options_engine.py         # wraps signal_engine + adds IV/put-call context
 │   ├── rti_tracker.py             # CF Benchmarks-style settlement price averaging

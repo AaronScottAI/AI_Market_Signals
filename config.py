@@ -182,8 +182,29 @@ ML_VERSION_RETENTION = 30
 # separate from (and a check against) the backtested training metrics.
 ML_PREDICTIONS_DATA_DIR = os.path.join(PROJECT_ROOT, "ml_predictions")
 
+# --- Volatility-based bias amplification -----------------------------------
+# During elevated volatility (top half of the symbol's own recent
+# Bollinger-Band-width range -- see analysis/indicators.py's
+# bollinger_width_percentile), stretch the bullish/bearish split further
+# from 50/50 in whichever direction it's already leaning. The idea: a fast,
+# volatile move is more likely a genuine directional break than sideways
+# chop, so the blended reading should reflect more conviction rather than
+# getting diluted toward neutral by indicators disagreeing mid-move.
+# Below-median volatility is left completely untouched -- this only
+# affects the upper half of a symbol's own recent volatility range, never
+# a fixed threshold that would mean something different for every symbol.
+VOLATILITY_BIAS_MAX = 0.6  # up to 60% more extreme at peak (100th percentile) volatility
+
+# --- Chart pattern signals (see analysis/chart_patterns.py) ----------------
+# Conditionally included in the weighted vote, same treatment as the ML
+# signal: most of the time no clean pattern is forming at all, so these
+# only contribute when one is actually detected, rather than diluting
+# everything else with a meaningless "neutral" vote most of the time.
+PATTERN_REVERSAL_WEIGHT = 0.30    # double top / double bottom
+PATTERN_CONTINUATION_WEIGHT = 0.25  # bull flag / bear flag
+
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.9.0"
+APP_VERSION = "1.12.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

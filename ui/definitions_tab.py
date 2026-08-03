@@ -111,7 +111,14 @@ SECTIONS = [
             None,
             "Every indicator above casts a weighted \"vote\" bullish or bearish (weights shown next to "
             "each one). All the votes are combined into one 0&ndash;100% bullish score; Bearish % is "
-            "just 100 minus that. This is the number behind the green/red split bar.",
+            "just 100 minus that. This is the number behind the green/red split bar. <b>Amplified during "
+            "elevated volatility:</b> when this symbol's current Bollinger Band width sits above its own "
+            "recent median (the top half of its normal range), the vote gets stretched further from 50/50 "
+            "in whichever direction it's already leaning, up to 60% more extreme at peak volatility. Calmer "
+            "conditions (bottom half of the normal range) are completely unaffected. The idea: a fast, "
+            "volatile move is more likely a genuine directional break than sideways chop, so the reading "
+            "reflects more conviction rather than getting diluted toward neutral by indicators disagreeing "
+            "mid-move. This never changes which way the vote leans, only how strongly.",
         ),
         (
             "Confidence %",
@@ -128,6 +135,47 @@ SECTIONS = [
             "lean &mdash; of how likely a sharp move up (breakout) or down (breakdown) is brewing. "
             "This is independent of the main direction call: a squeeze can show elevated odds on "
             "<i>both</i> sides at once, since a squeeze means \"something's coming,\" not which way.",
+        ),
+    ]),
+    ("Chart Pattern Signals", [
+        (
+            "Double top / Double bottom / Head & shoulders / Inverse",
+            "30%*",
+            "Classic reversal patterns, whichever is detected and cleanest wins this slot. A "
+            "<b>double top</b>: two recent peaks at a similar price level with a genuine pullback "
+            "between them &mdash; bearish. <b>Double bottom</b> is the mirror image &mdash; bullish. "
+            "<b>Head & shoulders</b>: three peaks with a prominent middle one (the head) higher than "
+            "two roughly-similar shoulders &mdash; bearish. <b>Inverse head & shoulders</b> is the "
+            "mirror image &mdash; bullish. All four are shown as \"forming\" until price actually "
+            "breaks the neckline (the trough/peak level between the pattern's key points), at which "
+            "point they're \"confirmed\" and carry a bit more weight. Only shows up when actually "
+            "detected &mdash; most of the time, none of these are present. *30% is this signal's "
+            "weight when it fires, alongside the rule-based weights above (which sum to 1.0) &mdash; "
+            "same additive treatment as the ML signal.",
+        ),
+        (
+            "Bull/bear flag / Ascending/descending triangle",
+            "25%*",
+            "Classic continuation patterns, whichever is detected and cleanest wins this slot. A "
+            "<b>bull flag</b>: a sharp upward move (the \"pole\") followed by a tight consolidation "
+            "(the \"flag\") &mdash; bullish. <b>Bear flag</b> is the mirror image &mdash; bearish. An "
+            "<b>ascending triangle</b>: roughly flat resistance with progressively higher lows, a "
+            "narrowing range that classically tends to break out upward &mdash; bullish. "
+            "<b>Descending triangle</b> is the mirror image (flat support, progressively lower highs) "
+            "&mdash; bearish. Also only shows up when detected. *25% is this signal's weight when it "
+            "fires, same additive treatment as above.",
+        ),
+        (
+            "A note on chart patterns generally",
+            None,
+            "These are heuristic approximations of what a human technical analyst would eyeball &mdash; "
+            "not exact geometric definitions, and inherently a bit fuzzy even in traditional technical "
+            "analysis. Detection includes a quality score (how clean/textbook the pattern looks) that "
+            "scales how much weight it carries in the vote. It's possible for a reversal and a "
+            "continuation pattern to both fire at once on the same data &mdash; that's not a bug, just "
+            "two genuinely overlapping readings of the same price action. Not currently covered: cup "
+            "and handle (left out deliberately -- a much longer, more subjective formation that's "
+            "harder to detect reliably without a lot of false positives).",
         ),
     ]),
     ("Options-Only Signals (Stock Options tab)", [

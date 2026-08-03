@@ -167,6 +167,50 @@ def _score_volume(row) -> tuple[float, SignalFlag]:
     return score, SignalFlag("volume", "Volume spike", bool(spike), direction, detail)
 
 
+def _score_pattern_reversal(df_with_indicators: pd.DataFrame) -> tuple[float, SignalFlag | None]:
+    """Double top/bottom or head & shoulders/inverse -- classic reversal
+    patterns. Only contributes to the vote when one is actually detected;
+    most of the time none of them are present at all."""
+    from analysis import chart_patterns
+
+    peaks, troughs = chart_patterns.find_pivots(df_with_indicators["high"], df_with_indicators["low"])
+    result = chart_patterns.best_reversal_pattern(df_with_indicators, peaks, troughs)
+    if result is None:
+        return 0.0, None
+
+    magnitude = 0.4 + result.quality * 0.6
+    if not result.confirmed:
+        magnitude *= 0.6  # still forming, not yet confirmed by a neckline break -- weaker conviction
+    score = magnitude if result.direction == "bullish" else -magnitude
+    labels = {
+        "double_top": "Double top", "double_bottom": "Double bottom",
+        "head_and_shoulders": "Head & shoulders", "inverse_head_and_shoulders": "Inverse head & shoulders",
+    }
+    label = labels.get(result.name, result.name)
+    return score, SignalFlag("pattern_reversal", label, True, result.direction, result.detail)
+
+
+def _score_pattern_continuation(df_with_indicators: pd.DataFrame) -> tuple[float, SignalFlag | None]:
+    """Bull/bear flag or ascending/descending triangle -- classic
+    continuation patterns. Only contributes to the vote when one is
+    actually detected."""
+    from analysis import chart_patterns
+
+    peaks, troughs = chart_patterns.find_pivots(df_with_indicators["high"], df_with_indicators["low"])
+    result = chart_patterns.best_continuation_pattern(df_with_indicators, peaks, troughs)
+    if result is None:
+        return 0.0, None
+
+    magnitude = result.quality * 0.8
+    score = magnitude if result.direction == "bullish" else -magnitude
+    labels = {
+        "bull_flag": "Bull flag", "bear_flag": "Bear flag",
+        "ascending_triangle": "Ascending triangle", "descending_triangle": "Descending triangle",
+    }
+    label = labels.get(result.name, result.name)
+    return score, SignalFlag("pattern_continuation", label, True, result.direction, result.detail)
+
+
 def _score_ml(
     df_with_indicators: pd.DataFrame, model_name: str, symbol: str | None = None,
 ) -> tuple[float, SignalFlag | None, float | None]:
@@ -298,6 +342,18 @@ def analyze(
         total_score += score * weight
         total_weight += weight
 
+    reversal_score, reversal_flag = _score_pattern_reversal(df_with_indicators)
+    if reversal_flag is not None:
+        flags.append(reversal_flag)
+        total_score += reversal_score * config.PATTERN_REVERSAL_WEIGHT
+        total_weight += config.PATTERN_REVERSAL_WEIGHT
+
+    continuation_score, continuation_flag = _score_pattern_continuation(df_with_indicators)
+    if continuation_flag is not None:
+        flags.append(continuation_flag)
+        total_score += continuation_score * config.PATTERN_CONTINUATION_WEIGHT
+        total_weight += config.PATTERN_CONTINUATION_WEIGHT
+
     ml_signal_flag = None
     ml_probability_up = None
     if ml_model_name:
@@ -313,6 +369,17 @@ def analyze(
             total_weight += ml_weight
 
     net_score = total_score / total_weight if total_weight else 0.0  # -1..1
+
+    # Stretch net_score toward its extremes when this symbol is currently
+    # more volatile than its own recent median (see config.VOLATILITY_BIAS_MAX).
+    # Below-median volatility -> completely unchanged.
+    volatility_pct = row.get("bb_width_pct", np.nan)
+    if pd.isna(volatility_pct):
+        volatility_pct = 0.5  # not enough warmed-up history yet -- neutral, no amplification
+    if volatility_pct > 0.5:
+        amplification = 1.0 + ((volatility_pct - 0.5) / 0.5) * config.VOLATILITY_BIAS_MAX
+        net_score = _clip(net_score * amplification, -1.0, 1.0)
+
     bullish_pct = _clip(50 + net_score * 50, 2, 98)
     bearish_pct = 100 - bullish_pct
 
