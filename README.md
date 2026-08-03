@@ -69,11 +69,21 @@ same price action, not a bug.
 subjective formation that's harder to detect reliably without a lot of
 false positives, left out rather than shipped half-confident.
 
-Not currently extended to the ML model's training features -- pattern
-detection needs a window of recent bars ending at each point in time,
-which is cheap for one live analysis but would mean re-running detection
-at every row of a 50,000+ row training set if done naively (a real
-performance concern, not yet solved). Rule-based only for now.
+**Also extended into the ML model's training features** (`analysis/ml_features.py`,
+16 features -> 24): not the same iterative pattern detectors described
+above (too slow to re-run at every row of a 50,000+ row training set --
+roughly a billion+ operations, naively), but eight vectorized *proxy*
+features approximating the same underlying structure using pure
+rolling-window arithmetic -- retesting a prior high/low and how deep the
+pullback since then was (double-top/bottom-ish), rolling trend slope of
+highs and lows plus how much the trading range has compressed
+(triangle/flag-ish), and the size of the move just before the current
+consolidation (a flag's "pole"). Cheaper and less precise than true
+pattern detection, but verified to add well under a second at the largest
+expected training size (95,000 rows) -- down from roughly 20+ seconds in
+an earlier, slower implementation of the same idea. Also verified to have
+zero lookahead (each feature's value at a given row is provably identical
+whether or not any future rows exist yet).
 
 ## Optional ML-based direction signal (auto-retrains hourly)
 

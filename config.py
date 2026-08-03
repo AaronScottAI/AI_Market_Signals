@@ -204,7 +204,7 @@ PATTERN_REVERSAL_WEIGHT = 0.30    # double top / double bottom
 PATTERN_CONTINUATION_WEIGHT = 0.25  # bull flag / bear flag
 
 APP_NAME = "Market Signal Dashboard"
-APP_VERSION = "1.12.0"
+APP_VERSION = "1.13.0"
 
 # Auto-update checker settings. Leave UPDATE_REPO_OWNER blank to disable the
 # checker entirely (it silently does nothing if unconfigured). See

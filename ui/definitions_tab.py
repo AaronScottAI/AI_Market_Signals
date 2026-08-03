@@ -54,10 +54,13 @@ SECTIONS = [
         (
             "ML model prediction &mdash; shown above Confidence, only once trained",
             "varies*",
-            "A calibrated machine-learning model (gradient-boosted trees), trained on 16 scale-invariant "
-            "features &mdash; the same indicators above (as raw values, not thresholded scores), plus "
-            "short/medium-term momentum (5-bar and 20-bar returns) and cyclical time-of-day / day-of-week "
-            "encoding, so it can potentially learn session and weekly structure too. <b>Retrains itself "
+            "A calibrated machine-learning model (gradient-boosted trees), trained on 24 scale-invariant "
+            "features &mdash; the same indicators above (as raw values, not thresholded scores), "
+            "short/medium-term momentum (5-bar and 20-bar returns), cyclical time-of-day / day-of-week "
+            "encoding, and 8 vectorized chart-pattern proxy features (is price retesting a prior high/low, "
+            "how deep was the pullback since, is the trading range compressing, and the size of the move "
+            "just before the current consolidation) approximating the same structure the Chart Pattern "
+            "Signals above look for, cheaper to compute at training scale. <b>Retrains itself "
             "automatically roughly once an hour</b> while the app is open, but only replaces the active "
             "model if the new version actually beats it on a freshly-built test set. See the <b>Model "
             "History</b> tab to review every trained version's backtested and real-world (\u201clive\u201d) "
