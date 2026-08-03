@@ -22922,9 +22922,10 @@
       "price_at_prediction": 63673.8,
       "predicted_at": "2026-08-03T10:46:46.183951",
       "resolve_at": "2026-08-03T11:01:46.183958",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -22935,9 +22936,10 @@
       "price_at_prediction": 63648.0,
       "predicted_at": "2026-08-03T10:47:46.200034",
       "resolve_at": "2026-08-03T11:02:46.200042",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -22948,9 +22950,10 @@
       "price_at_prediction": 63598.8,
       "predicted_at": "2026-08-03T10:48:46.103403",
       "resolve_at": "2026-08-03T11:03:46.103410",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -22961,9 +22964,10 @@
       "price_at_prediction": 63624.9,
       "predicted_at": "2026-08-03T10:49:46.070966",
       "resolve_at": "2026-08-03T11:04:46.070972",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -22974,9 +22978,10 @@
       "price_at_prediction": 63723.0,
       "predicted_at": "2026-08-03T10:50:46.371196",
       "resolve_at": "2026-08-03T11:05:46.371203",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -22987,9 +22992,10 @@
       "price_at_prediction": 63719.6,
       "predicted_at": "2026-08-03T10:51:46.211397",
       "resolve_at": "2026-08-03T11:06:46.211404",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23000,9 +23006,10 @@
       "price_at_prediction": 63677.1,
       "predicted_at": "2026-08-03T10:52:46.229509",
       "resolve_at": "2026-08-03T11:07:46.229515",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23013,9 +23020,10 @@
       "price_at_prediction": 63738.2,
       "predicted_at": "2026-08-03T10:53:46.119700",
       "resolve_at": "2026-08-03T11:08:46.119708",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23026,9 +23034,10 @@
       "price_at_prediction": 63786.8,
       "predicted_at": "2026-08-03T10:54:46.213043",
       "resolve_at": "2026-08-03T11:09:46.213050",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "UP",
+      "correct": true,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23039,9 +23048,10 @@
       "price_at_prediction": 63854.5,
       "predicted_at": "2026-08-03T10:55:46.203450",
       "resolve_at": "2026-08-03T11:10:46.203459",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23052,9 +23062,10 @@
       "price_at_prediction": 63894.9,
       "predicted_at": "2026-08-03T10:56:46.197615",
       "resolve_at": "2026-08-03T11:11:46.197622",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23065,9 +23076,10 @@
       "price_at_prediction": 63838.6,
       "predicted_at": "2026-08-03T10:57:46.176856",
       "resolve_at": "2026-08-03T11:12:46.176862",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23078,9 +23090,10 @@
       "price_at_prediction": 63825.4,
       "predicted_at": "2026-08-03T10:58:46.199131",
       "resolve_at": "2026-08-03T11:13:46.199138",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23091,9 +23104,10 @@
       "price_at_prediction": 63892.9,
       "predicted_at": "2026-08-03T10:59:48.474413",
       "resolve_at": "2026-08-03T11:14:48.474419",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23104,9 +23118,10 @@
       "price_at_prediction": 63845.3,
       "predicted_at": "2026-08-03T11:00:47.827248",
       "resolve_at": "2026-08-03T11:15:47.827255",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "BTC/USD",
@@ -23117,9 +23132,10 @@
       "price_at_prediction": 63839.0,
       "predicted_at": "2026-08-03T11:01:33.338135",
       "resolve_at": "2026-08-03T11:16:33.338140",
-      "resolved": false,
-      "actual_direction": null,
-      "correct": null
+      "resolved": true,
+      "actual_direction": "DOWN",
+      "correct": false,
+      "resolved_price": 63824.9
     },
     {
       "symbol": "HYPE/USD",
